@@ -31,7 +31,7 @@ $result = $conn->query($sql);
                 <th>Username</th>
                 <th>Joined</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Action</th>                
             </tr>
         </thead>
         <tbody>
@@ -49,6 +49,13 @@ $result = $conn->query($sql);
                         <?= ($row['status'] === 'Active') ? 'Deactivate' : 'Activate' ?>
                     </a>
                 </td>
+                <td>
+                    <a class="btn-edit"
+                    href="edit_player.php?player_id=<?= $row['player_id'] ?>">
+                    Edit
+                    </a>
+                </td>
+                
             </tr>
         <?php endwhile; ?>
         </tbody>
