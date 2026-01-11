@@ -16,7 +16,6 @@ session_start();
 
 <div class="home-container">
 
-    <!-- LEFT IMAGE SECTION -->
     <div class="image-section">
         <div class="image-overlay">
 
@@ -36,7 +35,6 @@ session_start();
         </div>
     </div>
 
-    <!-- RIGHT LOGIN SECTION -->
     <div class="login-section">
         <div class="login-box">
 
@@ -45,7 +43,7 @@ session_start();
             <h2>Welcome Back</h2>
             <p class="subtitle">Login to continue</p>
 
-            <!-- ERROR MESSAGE -->
+     
             <?php if (isset($_SESSION['error'])): ?>
                 <p style="color:#ff6b6b; margin-bottom:15px;">
                     <?= $_SESSION['error']; unset($_SESSION['error']); ?>

@@ -23,17 +23,34 @@ if ($result->num_rows !== 1) {
 
 $user = $result->fetch_assoc();
 
-/* Plain text check (OK for now – will hash later) */
 if ($password !== $user['password']) {
     $_SESSION['error'] = "Invalid username or password";
     header("Location: ../index.php");
     exit;
 }
 
-/* Normalize role */
+/* Check if Player is active */
+if ($user['role'] === 'Player') {
+    $check = $conn->prepare("
+        SELECT p.status 
+        FROM players p
+        JOIN user_player up ON p.player_id = up.player_id
+        WHERE up.user_id = ?
+    ");
+    $check->bind_param("i", $user['user_id']);
+    $check->execute();
+    $res = $check->get_result()->fetch_assoc();
+
+    if ($res['status'] !== 'Active') {
+        $_SESSION['error'] = "Your account is inactive. Contact admin.";
+        header("Location: ../index.php");
+        exit;
+    }
+}
+
 $role = strtolower($user['role']);
 
-/* Player must be linked */
+
 if ($role === 'player') {
     $check = $conn->prepare(
         "SELECT 1 FROM user_player WHERE user_id = ?"
@@ -48,13 +65,12 @@ if ($role === 'player') {
     }
 }
 
-/* Login success */
 $_SESSION['logged_in'] = true;
 $_SESSION['user_id']   = $user['user_id'];
 $_SESSION['username']  = $user['username'];
 $_SESSION['role']      = $role;
 
-/* Redirect by role */
+
 switch ($role) {
     case 'admin':
         header("Location: ../admin/dashboard.php");
