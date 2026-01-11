@@ -3,7 +3,13 @@ require_once "admin_guard.php";
 require_once "../config/db.php";
 
 $sql = "
-SELECT p.player_id, p.full_name, p.joined_date, p.status, u.username
+SELECT 
+    p.player_id,
+    p.full_name,
+    p.joined_date,
+    p.status,
+    u.username,
+    u.user_id
 FROM players p
 JOIN user_player up ON p.player_id = up.player_id
 JOIN users u ON up.user_id = u.user_id
@@ -44,18 +50,28 @@ $result = $conn->query($sql);
                     <?= $row['status'] ?>
                 </td>
                 <td>
+                    <!-- Activate / Deactivate -->
                     <a href="toggle_player.php?player_id=<?= $row['player_id'] ?>"
-                        class="btn-edit">
+                    class="btn <?= ($row['status'] === 'Active') ? 'btn-danger' : 'btn-success' ?>">
                         <?= ($row['status'] === 'Active') ? 'Deactivate' : 'Activate' ?>
                     </a>
-                </td>
-                <td>
-                    <a class="btn-edit"
-                    href="edit_player.php?player_id=<?= $row['player_id'] ?>">
-                    Edit
+
+                    &nbsp;|&nbsp;
+
+                    <!-- Edit -->
+                    <a href="edit_player.php?player_id=<?= $row['player_id'] ?>"
+                    class="btn btn-edit">
+                        Edit
                     </a>
-                </td>
-                
+
+                    &nbsp;|&nbsp;
+
+                    <!-- Reset Password -->
+                    <a href="reset_password.php?user_id=<?= $row['user_id'] ?>"
+                    class="btn btn-warning">
+                        Reset Password
+                    </a>
+                </td>       
             </tr>
         <?php endwhile; ?>
         </tbody>

@@ -38,6 +38,12 @@ require_once "admin_guard.php";
                 <h3>➕ Add New Player</h3>
                 <p>Create a new player with login access</p>
             </a>
+
+            <a href="seasons.php" class="card">
+                <h3>🗓 Manage Seasons</h3>
+                <p>Create and activate cricket seasons</p>
+            </a>
+
         </div>
     </div>
 </body>
