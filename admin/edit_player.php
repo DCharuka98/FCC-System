@@ -37,6 +37,7 @@ $player = $result->fetch_assoc();
 <head>
     <title>Edit Player | FCC</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="icon" href="../assets/images/Logo white.png">
 </head>
 <body>
 

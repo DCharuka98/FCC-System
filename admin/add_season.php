@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Add Season | FCC</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="icon" href="../assets/images/Logo white.png">
 </head>
 <body>
 

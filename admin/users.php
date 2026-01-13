@@ -8,6 +8,7 @@ $users = $conn->query("SELECT * FROM users");
 <html>
 <head>
     <title>Manage Users</title>
+    <link rel="icon" href="../assets/images/Logo white.png">
 </head>
 <body>
 
