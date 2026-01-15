@@ -9,8 +9,10 @@ require_once "admin_guard.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../assets/images/Logo white.png">
     <link rel="stylesheet" href="../assets/css/admin.css">
+    
 </head>
-<body>
+<body class="admin-layout">
+    <main class="admin-content">
     <div class="dashboard-hero">    
         <div class="dashboard-header">
             <div class="dashboard-header-left">
@@ -46,5 +48,7 @@ require_once "admin_guard.php";
 
         </div>
     </div>
+    </main>
+    <?php include "partials/admin_footer.php"; ?>
 </body>
 </html>

@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 
 <?php include "partials/admin_nav.php"; ?>
-
+<main class="admin-content">
 <div class="page-container">
 
     <div class="form-wrapper">
@@ -111,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
 </div>
-
+</main>               
+<?php include "partials/admin_footer.php"; ?>
 </body>
 </html>

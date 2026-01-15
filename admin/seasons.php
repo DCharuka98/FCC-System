@@ -24,10 +24,10 @@ $result = $conn->query("
     <link rel="stylesheet" href="../assets/css/admin.css">
     <link rel="icon" href="../assets/images/Logo white.png">
 </head>
-<body>
+<body class="admin-layout">
 
 <?php include "partials/admin_nav.php"; ?>
-
+<main class="admin-content">
 <div class="page-container">
 
     <h2>MANAGE SEASONS</h2>
@@ -80,6 +80,7 @@ $result = $conn->query("
     <a href="add_season.php" class="btn btn-warning">➕ Add New Season</a>
 
 </div>
-
+</main>
+<?php include "partials/admin_footer.php"; ?>
 </body>
 </html>

@@ -11,6 +11,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
         <a href="dashboard.php">Dashboard</a>
         <a href="players.php">Players</a>
         <a href="add_player.php">Add Player</a>
+        <a href="seasons.php">Seasons</a>
     </div>
 
     <a href="../auth/logout.php" class="logout-btn">Logout</a>

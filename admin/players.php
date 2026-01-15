@@ -69,7 +69,7 @@ $counts = $countResult->fetch_assoc();
 <body>
 
 <?php include "partials/admin_nav.php"; ?>
-
+<main class="admin-content">
 <div class="page-container">
     <h2>MANAGE PLAYERS</h2>
 
@@ -168,5 +168,7 @@ $counts = $countResult->fetch_assoc();
     </table>
     </div>
 </div>
+</main>
+<?php include "partials/admin_footer.php"; ?>
 </body>
 </html>
