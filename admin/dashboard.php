@@ -46,6 +46,10 @@ require_once "admin_guard.php";
                 <p>Create and activate cricket seasons</p>
             </a>
 
+            <a href="matches/start_day.php" class="card">
+                <h3>🗓 Start Playing Day</h3>
+                <p>Create a new playing day for matches</p>
+            </a>
         </div>
     </div>
     </main>

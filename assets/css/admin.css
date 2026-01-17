@@ -487,6 +487,209 @@ form button:hover {
     color: #666;
 }
 
+/*  FORM CARD (GLOBAL)  */
+.form-card {
+    background: rgba(18,18,18,0.95);
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 520px;
+    margin: 0 auto;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+
+.form-card h2 {
+    text-align: center;
+    margin-bottom: 22px;
+    color: #ffffff;
+    font-size: 24px;
+}
+
+/*  FORM ELEMENTS  */
+.form-card label {
+    display: block;
+    margin-top: 16px;
+    font-weight: 500;
+    color: #cccccc;
+}
+
+.form-card input,
+.form-card select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: #ffffff;
+    font-size: 15px;
+}
+
+/*  REMOVE BUTTON (FOR PLAYER LIST)  */
+.form-card .btn-remove {
+    background: #dc3545 !important;
+    color: #ffffff !important;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.form-card .btn-remove:hover {
+    background: #b02a37 !important;
+}
+
+/*  ADD BUTTON  */
+.form-card .btn-success {
+    background: #198754;
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.form-card .btn-success:hover {
+    background: #157347;
+}
+
+.search-results {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.search-results .selected-player {
+    background: #0f0f0f;
+    border: 1px solid #222;
+}
+.section-title {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #cccccc;
+}
+.selected-list {
+    max-height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 4px;
+}
+.selected-player {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #111;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #222;
+}
+.btn-remove {
+    background: #dc3545;
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-remove:hover {
+    background: #b02a37;
+}
+.btn-full {
+    margin-top: 25px;
+    padding: 14px;
+    font-size: 15px;
+}
+.team-division {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+/* Panel */
+.team-panel {
+    background: #111;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+.team-panel h3 {
+    text-align: center;
+    color: #0d6efd;
+    margin-bottom: 15px;
+}
+
+/* Player row */
+.player-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #1c1c1c;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* Player name */
+.player-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Buttons */
+.player-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.player-actions button {
+    background: #0d6efd;
+    border: none;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.player-actions button:hover {
+    background: #084298;
+}
+
+/* Team list */
+.team-list {
+    min-height: 220px;
+}
+
+/* Captain select */
+.captain-label {
+    display: block;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #aaa;
+}
+
+.team-panel select {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+}
+
+
 /*  RESPONSIVE */
 @media (max-width: 768px) {
     .dashboard-hero {
