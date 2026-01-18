@@ -365,10 +365,28 @@ select {
 </div>
 
 <div class="keypad extras">
-<button onclick="wide()">Wide</button>
-<button onclick="noBall()">No Ball</button>
-<button onclick="bye()">Bye</button>
+<button onclick="askExtra('WIDE')">Wide</button>
+<button onclick="askExtra('NO_BALL')">No Ball</button>
+<button onclick="askExtra('BYE')">Bye</button>
 </div>
+
+<div id="extraRunModal" class="hidden modal">
+    <div class="modal-box">
+        <h3 id="extraTitle">Extra Runs</h3>
+
+        <select id="extraRunSelect">
+            <option value="1">1 Run</option>
+            <option value="2">2 Runs</option>
+            <option value="3">3 Runs</option>
+            <option value="4">4 Runs</option>
+            <option value="5">5 Runs</option>
+            <option value="6">6 Runs</option>
+        </select>
+
+        <button class="confirm-btn" onclick="confirmExtra()">Confirm</button>
+    </div>
+</div>
+
 
 <div class="keypad">
 <button class="wicket-btn" onclick="wicket()">WICKET</button>
@@ -478,6 +496,7 @@ let waitingForNextBatsman = false;
 let waitingForNextBowler = false;
 let lastBatsmanOnly = false;
 let ballHistory = [];
+let extras = <?= (int)$extras ?>;
 
 function aliveBatsmenCount() {
     return batPlayers.filter(p => !outBatsmen.includes(p.player_id)).length;
@@ -508,7 +527,7 @@ function updateUI() {
     score.innerText = `${runs}-${wickets}`;
     overs.innerText = `${Math.floor(balls / BALLS_PER_OVER)}.${balls % BALLS_PER_OVER}`;
 
-    uiExtras.innerText = <?= $extras ?>;
+    uiExtras.innerText = extras;
     uiOversFull.innerText = overs.innerText;
     uiCRR.innerText = currentRunRate();
     uiProj.innerText = projectedScore();
@@ -543,25 +562,136 @@ function run(r) {
     ball();
 }
 
-function wide() {
+function wide(extraRuns = 1) {
     if (inningsOver || !scoringStarted || waitingForNextBatsman || waitingForNextBowler) return;
-    runs += 1;
-    saveBall({ runs: 1, extraType: "WIDE", extraRuns: 0 });
+
+    runs += extraRuns;
+
+    saveBall({
+        runs: 0,              
+        extraType: "WIDE",
+        extraRuns: extraRuns    
+    });
+
     updateUI();
 }
 
-function noBall() {
+
+function noBall(batRuns = 0) {
     if (inningsOver || !scoringStarted || waitingForNextBatsman || waitingForNextBowler) return;
-    runs += 1;
-    saveBall({ runs: 1, extraType: "NO_BALL", extraRuns: 0 });
+
+    runs += (1 + batRuns);
+
+    saveBall({
+        runs: batRuns,      
+        extraType: "NO_BALL",
+        extraRuns: 1           
+    });
+
+    if (batRuns % 2 === 1 && !lastBatsmanOnly) swapStrike();
+
     updateUI();
 }
 
-function bye() {
-   if (inningsOver || !scoringStarted || waitingForNextBatsman || waitingForNextBowler) return;
-    runs += 1;
-    saveBall({ runs: 1, extraType: "BYE", extraRuns: 1 });
+function bye(extraRuns = 1) {
+    if (inningsOver || !scoringStarted || waitingForNextBatsman || waitingForNextBowler) return;
+
+    runs += extraRuns;
+
+    saveBall({
+        runs: 0,               
+        extraType: "BYE",
+        extraRuns: extraRuns  
+    });
+
+
+    if (extraRuns % 2 === 1 && !lastBatsmanOnly) swapStrike();
+
+
     ball();
+}
+let pendingExtraType = null;
+
+function askExtra(type) {
+    pendingExtraType = type;
+
+    const title = document.getElementById("extraTitle");
+    const select = document.getElementById("extraRunSelect");
+
+    select.innerHTML = "";
+
+    if (type === "WIDE") {
+        title.innerText = "Total runs on this wide (including wide)";
+        [1,2,3,4,5].forEach(r =>
+            select.innerHTML += `<option value="${r}">${r} Run${r>1?'s':''}</option>`
+        );
+    }
+
+    if (type === "NO_BALL") {
+        title.innerText = "Batsman runs off the bat (excluding no-ball run)";
+        [0,1,2,3,4,6].forEach(r =>
+            select.innerHTML += `<option value="${r}">${r} Run${r!==1?'s':''}</option>`
+        );
+    }
+
+    if (type === "BYE") {
+        title.innerText = "Bye runs taken";
+        [1,2,3,4].forEach(r =>
+            select.innerHTML += `<option value="${r}">${r} Run${r>1?'s':''}</option>`
+        );
+    }
+
+    document.getElementById("extraRunModal").classList.remove("hidden");
+}
+
+function confirmExtra() {
+    const val = parseInt(document.getElementById("extraRunSelect").value);
+    document.getElementById("extraRunModal").classList.add("hidden");
+
+    if (pendingExtraType === "WIDE") {       
+        runs += val;
+        extras += val;
+
+        saveBall({
+            runs: 0,
+            extraType: "WIDE",
+            extraRuns: val
+        });
+
+        updateUI();
+    }
+
+    if (pendingExtraType === "NO_BALL") {
+        runs += (1 + val);
+        extras += 1;
+
+        saveBall({
+            runs: val,
+            extraType: "NO_BALL",
+            extraRuns: 1
+        });
+
+        if (val % 2 === 1 && !lastBatsmanOnly) swapStrike();
+
+        updateUI();
+    }
+
+    if (pendingExtraType === "BYE") {
+        runs += val;
+        extras += val;
+
+        saveBall({
+            runs: 0,
+            extraType: "BYE",
+            extraRuns: val
+        });
+
+        if (val % 2 === 1 && !lastBatsmanOnly) swapStrike();
+
+        ball();
+    }
+
+    pendingExtraType = null;
 }
 
 function swapStrike() {
