@@ -62,8 +62,7 @@ $counts = $countResult->fetch_assoc();
 <head>
     <title>Manage Players | FCC</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
-    <link rel="icon" href="../assets/images/Logo white.png">
-        
+    <link rel="icon" href="../assets/images/Logo white.png">    
     
 </head>
 <body>

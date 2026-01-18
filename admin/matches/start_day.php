@@ -2,15 +2,36 @@
 require_once "../admin_guard.php";
 require_once "../../config/db.php";
 
+/* Get active seasons */
+$seasons = $conn->query("
+    SELECT season_id, season_name
+    FROM seasons
+    WHERE status = 'Active'
+");
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $date = $_POST['playing_date'];
+    $date  = $_POST['playing_date'];
+    $venue = $_POST['venue'];
+
+    $season = $conn->query("
+        SELECT season_id
+        FROM seasons
+        WHERE status = 'Active'
+        LIMIT 1
+    ")->fetch_assoc();
+
+    if (!$season) {
+        die("No active season found");
+    }
+
+    $season_id = $season['season_id'];
 
     $stmt = $conn->prepare("
-        INSERT INTO playing_days (play_date, status)
-        VALUES (?, 'Active')
+        INSERT INTO playing_days (play_date, venue, season_id, status)
+        VALUES (?, ?, ?, 'Active')
     ");
-    $stmt->bind_param("s", $date);
+    $stmt->bind_param("ssi", $date, $venue, $season_id);
     $stmt->execute();
 
     $playing_day_id = $stmt->insert_id;
@@ -19,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,11 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="date" name="playing_date" required>
 
         <label>Venue</label>
-        <input type="text" name="venue" placeholder="Ground / Location">
+        <input type="text" name="venue" required>
 
-        <button type="submit">
-            Start Playing Day
-        </button>
+        <button type="submit">Start Playing Day</button>
     </form>
 </div>
 

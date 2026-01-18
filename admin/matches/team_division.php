@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
     $captainA = $_POST['captainA'] ?? null;
     $captainB = $_POST['captainB'] ?? null;
 
-    /* Validation */
+    /* VALIDATION */
     if (empty($teamA) || empty($teamB)) {
         die("Both teams must have players");
     }
@@ -44,36 +44,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
         die("Captain must belong to their team");
     }
 
-    /* Clean old data (safety) */
-    $conn->query("DELETE FROM playing_day_teams WHERE playing_day_id = $playing_day_id");
+    /* STEP 1: delete team players first */
+    $conn->query("
+        DELETE FROM playing_day_team_players
+        WHERE team_id IN (
+            SELECT team_id FROM playing_day_teams
+            WHERE playing_day_id = $playing_day_id
+        )
+    ");
 
-    /* Save Team A */
+    /* STEP 2: delete teams */
+    $conn->query("
+        DELETE FROM playing_day_teams
+        WHERE playing_day_id = $playing_day_id
+    ");
+
+    /* ===== INSERT TEAM A ===== */
+    $stmt = $conn->prepare("
+        INSERT INTO playing_day_teams
+        (playing_day_id, team_name, captain_id)
+        VALUES (?, 'A', ?)
+    ");
+    $stmt->bind_param("ii", $playing_day_id, $captainA);
+    $stmt->execute();
+    $teamA_id = $stmt->insert_id;
+
+    /* TEAM A PLAYERS */
+    $stmtPlayer = $conn->prepare("
+        INSERT INTO playing_day_team_players
+        (team_id, player_id)
+        VALUES (?, ?)
+    ");
     foreach ($teamA as $pid) {
-        $isCaptain = ($pid == $captainA) ? 1 : 0;
-        $stmt = $conn->prepare("
-            INSERT INTO playing_day_teams
-            (playing_day_id, player_id, team_name, is_captain)
-            VALUES (?, ?, 'A', ?)
-        ");
-        $stmt->bind_param("iii", $playing_day_id, $pid, $isCaptain);
-        $stmt->execute();
+        $stmtPlayer->bind_param("ii", $teamA_id, $pid);
+        $stmtPlayer->execute();
     }
 
-    /* Save Team B */
+    /* ===== INSERT TEAM B ===== */
+    $stmt = $conn->prepare("
+        INSERT INTO playing_day_teams
+        (playing_day_id, team_name, captain_id)
+        VALUES (?, 'B', ?)
+    ");
+    $stmt->bind_param("ii", $playing_day_id, $captainB);
+    $stmt->execute();
+    $teamB_id = $stmt->insert_id;
+
+    /* TEAM B PLAYERS */
     foreach ($teamB as $pid) {
-        $isCaptain = ($pid == $captainB) ? 1 : 0;
-        $stmt = $conn->prepare("
-            INSERT INTO playing_day_teams
-            (playing_day_id, player_id, team_name, is_captain)
-            VALUES (?, ?, 'B', ?)
-        ");
-        $stmt->bind_param("iii", $playing_day_id, $pid, $isCaptain);
-        $stmt->execute();
+        $stmtPlayer->bind_param("ii", $teamB_id, $pid);
+        $stmtPlayer->execute();
     }
 
     header("Location: create_match.php?day=$playing_day_id");
     exit;
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -187,7 +213,6 @@ function addToTeam(team, playerId) {
     addCaptainOption(captainSelect, playerId, name);
 }
 
-/* ===== MOVE BACK TO AVAILABLE ===== */
 function moveBack(playerId) {
     const row = document.querySelector(`.player-row[data-id='${playerId}']`);
     if (!row) return;
@@ -213,13 +238,11 @@ function moveBack(playerId) {
     availableBox.appendChild(div);
 }
 
-/* ===== SWITCH TEAM ===== */
 function switchTeam(targetTeam, playerId) {
     moveBack(playerId);
     addToTeam(targetTeam, playerId);
 }
 
-/* ===== CAPTAIN HELPERS ===== */
 function addCaptainOption(select, id, name) {
     if ([...select.options].some(o => o.value == id)) return;
 

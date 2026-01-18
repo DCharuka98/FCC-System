@@ -7,7 +7,6 @@ if ($playing_day_id <= 0) {
     die("Invalid playing day");
 }
 
-/* Fetch active players */
 $result = $conn->query("
     SELECT player_id, full_name
     FROM players

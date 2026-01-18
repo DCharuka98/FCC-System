@@ -43,5 +43,6 @@ if ($playing_day_id <= 0) {
 
 </div>
 </main>
+
 </body>
 </html>
