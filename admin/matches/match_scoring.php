@@ -57,13 +57,47 @@ while ($r = $res->fetch_assoc()) {
     $outBatsmen[] = (int)$r['batsman_id'];
 }
 
-$total_runs = (int)($state['runs'] ?? 0);
+$total_runs    = (int)($state['runs'] ?? 0);
 $total_wickets = (int)($state['wickets'] ?? 0);
-$total_balls = (int)($state['balls'] ?? 0);
-$total_runs = (int)($state['total_runs'] ?? 0);
-$extras     = (int)($state['extras'] ?? 0);
-$wickets    = (int)($state['wickets'] ?? 0);
-$balls      = (int)($state['balls'] ?? 0);
+$total_balls   = (int)($state['balls'] ?? 0);
+$extras        = 0;
+
+$finalBatting = [];
+
+$res = $conn->query("
+    SELECT
+        b.batsman_id,
+        p.full_name,
+        SUM(b.runs) AS runs,
+        COUNT(
+            CASE
+                WHEN b.extra_type IS NULL
+                     OR b.extra_type='NO_BALL'
+                THEN 1
+            END
+        ) AS balls,
+        SUM(CASE WHEN b.runs = 4 THEN 1 ELSE 0 END) AS fours,
+        SUM(CASE WHEN b.runs = 6 THEN 1 ELSE 0 END) AS sixes
+    FROM balls b
+    JOIN players p ON p.player_id = b.batsman_id
+    WHERE b.match_id = $match_id
+      AND b.innings_id = $innings_id
+    GROUP BY b.batsman_id
+");
+
+while ($row = $res->fetch_assoc()) {
+    $finalBatting[] = $row;
+}
+
+$teamRow = $conn->query("
+    SELECT t.team_name, t.captain_id, p.full_name AS captain_name
+    FROM playing_day_teams t
+    LEFT JOIN players p ON p.player_id = t.captain_id
+    WHERE t.team_id = $batting_team_id
+")->fetch_assoc();
+
+$battingTeamName = $teamRow['team_name'] ?? 'Team';
+$captainName = $teamRow['captain_name'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -170,7 +204,6 @@ select {
     color: #9ca3af;
 }
 
-
 .keypad {
     display: grid;
     grid-template-columns: repeat(3,1fr);
@@ -207,7 +240,6 @@ select {
     color: #fff;
     grid-column: span 3;
 }
-
 
 .match-stats {
     font-size: 14px;
@@ -258,14 +290,26 @@ select {
     align-items: center;
     justify-content: center;
     z-index: 999;
+    overflow-y: auto;
+    padding: 20px;
 }
 
 .modal-box {
     background: #111;
     padding: 24px;
     border-radius: 16px;
-    width: 320px;
+    width: 560px; 
+    max-width: 92vw;
     text-align: center;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.modal-box::-webkit-scrollbar {
+    width: 6px;
+}
+.modal-box::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.2);
+    border-radius: 6px;
 }
 
 .modal h3 {
@@ -284,6 +328,79 @@ select {
     display: none !important;
 }
 
+.score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.score-table th {
+    text-align: left;
+    padding: 6px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    color: #cbd5e1;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .4px;
+}
+
+.score-table td {
+    padding: 6px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.score-section h4 {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #f1f5f9;
+    letter-spacing: .4px;
+}
+
+.score-table th:nth-child(n+2),
+.score-table td:nth-child(n+2) {
+    text-align: right;
+}
+
+.score-table th:first-child,
+.score-table td:first-child {
+    text-align: left;
+}
+
+.score-table td {
+    padding: 8px 6px;
+}
+
+.score-table th:first-child,
+.score-table td:first-child {
+    width: 55%;
+}
+.score-section {
+    margin-top: 20px;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);   /* ⭐ outline */
+}
+
+.innings-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    font-size: 14px;
+    margin-bottom: 14px;
+}
+
+.innings-summary b {
+    color: #22c55e;
+}
+
+#inningsTitle {
+    text-transform: uppercase;
+}
 </style>
 </head>
 
@@ -341,8 +458,7 @@ select {
     <h1 id="score">0-0</h1>
     <p class="muted">
         Overs: <span id="overs">0.0</span> / <?= $match['overs'] ?> |
-        CRR: <span id="uiCRR">0.00</span> |
-        Proj: <span id="uiProj">0</span>
+        CRR: <span id="uiCRR">0.00</span>        
     </p>
 
     <div class="stat-row">
@@ -387,7 +503,6 @@ select {
     </div>
 </div>
 
-
 <div class="keypad">
 <button class="wicket-btn" onclick="wicket()">WICKET</button>
 </div>
@@ -425,30 +540,12 @@ select {
 <div class="panel match-stats">
     <h3 class="panel-title">Match Stats</h3>
 
-    <div class="stat-row">
-        <span class="stat-label">Striker</span>
-        <span class="stat-value" id="uiStriker"></span>
-    </div>
+    <div id="liveBattingCard"></div>
 
-    <div class="stat-row">
-        <span class="stat-label">Non-Striker</span>
-        <span class="stat-value muted" id="uiNonStriker"></span>
-    </div>
+    <hr style="opacity:.15;margin:12px 0;">
 
-    <div class="stat-row">
-        <span class="stat-label">Bowler</span>
-        <span class="stat-value bowler" id="uiBowler"></span>
-    </div>
-
-    <div class="last-man-badge hidden" id="lastManBadge">
-        Last batsman batting alone
-    </div>
-
-    <hr>
-
-<hr>
+    <div id="liveBowlerCard"></div>
 </div>
-
 </div>
 </div>
 </main>
@@ -463,6 +560,8 @@ const MAX_WICKETS = batPlayers.length - 1;
 const dismissalTypeEl = document.getElementById("dismissalType");
 const assistBox = document.getElementById("assistPlayerBox");
 const assistPlayer = document.getElementById("assistPlayer");
+const battingTeamName = <?= json_encode($battingTeamName) ?>;
+const captainName = <?= json_encode($captainName) ?>;
 
 dismissalTypeEl.addEventListener("change", () => {
     const type = dismissalTypeEl.value;
@@ -487,17 +586,20 @@ function loadFielders() {
 let runs = <?= $total_runs ?>;
 let wickets = <?= $total_wickets ?>;
 let balls = <?= $total_balls ?>;
-
 let scoringStarted = false;
 let inningsOver = false;
 let outBatsmen = <?= json_encode($outBatsmen) ?>;
-
 let waitingForNextBatsman = false;
 let waitingForNextBowler = false;
 let lastBatsmanOnly = false;
 let ballHistory = [];
 let extras = <?= (int)$extras ?>;
+let batsmanStats = {};
+let bowlerStats = {};
+let partnershipRuns = 0;
+let partnershipBalls = 0;
 
+const finalBatting = <?= json_encode($finalBatting) ?>;
 function aliveBatsmenCount() {
     return batPlayers.filter(p => !outBatsmen.includes(p.player_id)).length;
 }
@@ -511,27 +613,32 @@ function startScoring() {
         alert("Striker and Non-Striker cannot be same");
         return;
     }
+
     scoringStarted = true;
+
+    initBatsman(striker.value);
+    initBatsman(nonStriker.value);
+    initBowler(bowler.value);
+
     document.querySelectorAll(".keypad button").forEach(b => b.disabled = false);
     document.getElementById("setupPanel").classList.add("locked");
+
     updateUI();
 }
 
 function updateUI() {
-    uiStriker.innerText = striker.options[striker.selectedIndex].text;
-    uiBowler.innerText  = bowler.options[bowler.selectedIndex].text;
-
-    uiNonStriker.innerText = lastBatsmanOnly ? "—" :
-        nonStriker.options[nonStriker.selectedIndex].text;
 
     score.innerText = `${runs}-${wickets}`;
-    overs.innerText = `${Math.floor(balls / BALLS_PER_OVER)}.${balls % BALLS_PER_OVER}`;
+
+    overs.innerText =
+        `${Math.floor(balls / BALLS_PER_OVER)}.${balls % BALLS_PER_OVER}`;
 
     uiExtras.innerText = extras;
-    uiOversFull.innerText = overs.innerText;
     uiCRR.innerText = currentRunRate();
-    uiProj.innerText = projectedScore();
     uiPartnership.innerText = partnershipStats();
+
+    renderLiveBattingCard();
+    renderLiveBowlerCard();
 }
 
 function ball() {
@@ -555,37 +662,70 @@ function ball() {
 function run(r) {
     if (inningsOver || !scoringStarted || waitingForNextBatsman || waitingForNextBowler) return;
 
+    initBatsman(striker.value);
+    initBowler(bowler.value);
+
+    batsmanStats[striker.value].runs += r;
+    batsmanStats[striker.value].balls += 1;
+    if (r === 4) batsmanStats[striker.value].fours++;
+    if (r === 6) batsmanStats[striker.value].sixes++;
+
+    bowlerStats[bowler.value].balls++;
+    bowlerStats[bowler.value].runs += r;
+
+    partnershipRuns += r;
+    partnershipBalls++;
+
     runs += r;
     saveBall({ runs: r });
 
     if (r % 2 === 1 && !lastBatsmanOnly) swapStrike();
+    
+
     ball();
+
 }
+
 
 function wide(extraRuns = 1) {
     if (inningsOver || !scoringStarted || waitingForNextBatsman || waitingForNextBowler) return;
 
+    initBowler(bowler.value);
+    
     runs += extraRuns;
+    extras += extraRuns;
+
+    bowlerStats[bowler.value].runs += extraRuns;
 
     saveBall({
-        runs: 0,              
+        runs: 0,
         extraType: "WIDE",
-        extraRuns: extraRuns    
+        extraRuns: extraRuns
     });
 
     updateUI();
 }
 
-
 function noBall(batRuns = 0) {
     if (inningsOver || !scoringStarted || waitingForNextBatsman || waitingForNextBowler) return;
 
+    initBatsman(striker.value);
+    initBowler(bowler.value);
+
     runs += (1 + batRuns);
+    extras += 1;
+
+    batsmanStats[striker.value].runs += batRuns;
+    if (batRuns > 0) batsmanStats[striker.value].balls += 1;
+
+    bowlerStats[bowler.value].runs += (1 + batRuns);
+
+    partnershipRuns += batRuns;
 
     saveBall({
-        runs: batRuns,      
+        runs: batRuns,
         extraType: "NO_BALL",
-        extraRuns: 1           
+        extraRuns: 1
     });
 
     if (batRuns % 2 === 1 && !lastBatsmanOnly) swapStrike();
@@ -596,23 +736,33 @@ function noBall(batRuns = 0) {
 function bye(extraRuns = 1) {
     if (inningsOver || !scoringStarted || waitingForNextBatsman || waitingForNextBowler) return;
 
+    initBowler(bowler.value);
+
     runs += extraRuns;
+    extras += extraRuns;
+    partnershipRuns += extraRuns;
+    partnershipBalls += 1;
+
+    bowlerStats[bowler.value].balls++;
+    bowlerStats[bowler.value].runs += extraRuns;
 
     saveBall({
-        runs: 0,               
+        runs: 0,
         extraType: "BYE",
-        extraRuns: extraRuns  
+        extraRuns: extraRuns
     });
 
-
     if (extraRuns % 2 === 1 && !lastBatsmanOnly) swapStrike();
-
 
     ball();
 }
 let pendingExtraType = null;
 
 function askExtra(type) {
+    if (waitingForNextBowler || waitingForNextBatsman) {
+    alert("Complete over change before scoring extras");
+    return;
+}
     pendingExtraType = type;
 
     const title = document.getElementById("extraTitle");
@@ -645,12 +795,19 @@ function askExtra(type) {
 }
 
 function confirmExtra() {
+    if (inningsOver || !scoringStarted || waitingForNextBowler || waitingForNextBatsman) {
+    alert("Select next bowler / batsman before continuing");
+    return;
+    }
     const val = parseInt(document.getElementById("extraRunSelect").value);
     document.getElementById("extraRunModal").classList.add("hidden");
 
     if (pendingExtraType === "WIDE") {       
         runs += val;
         extras += val;
+
+        initBowler(bowler.value);         
+        bowlerStats[bowler.value].runs += val;  
 
         saveBall({
             runs: 0,
@@ -665,6 +822,9 @@ function confirmExtra() {
         runs += (1 + val);
         extras += 1;
 
+        initBowler(bowler.value);             
+        bowlerStats[bowler.value].runs += (1 + val);  
+
         saveBall({
             runs: val,
             extraType: "NO_BALL",
@@ -672,8 +832,11 @@ function confirmExtra() {
         });
 
         if (val % 2 === 1 && !lastBatsmanOnly) swapStrike();
+        batsmanStats[striker.value].runs += val;
+        if (val > 0) batsmanStats[striker.value].balls += 1;
 
         updateUI();
+
     }
 
     if (pendingExtraType === "BYE") {
@@ -699,10 +862,32 @@ function swapStrike() {
     [striker.value, nonStriker.value] = [nonStriker.value, striker.value];
 }
 
+function initBatsman(playerId) {
+    if (!batsmanStats[playerId]) {
+        batsmanStats[playerId] = {
+            runs: 0,
+            balls: 0,
+            fours: 0,
+            sixes: 0
+        };
+    }
+}
+
+function initBowler(playerId) {
+    if (!bowlerStats[playerId]) {
+        bowlerStats[playerId] = {
+            balls: 0,
+            runs: 0,
+            wickets: 0
+        };
+    }
+}
 function wicket() {
     if (inningsOver || !scoringStarted || waitingForNextBatsman || waitingForNextBowler) return;
 
     document.getElementById("dismissalBox").classList.remove("hidden");
+    partnershipRuns = 0;
+    partnershipBalls = 0;
 }
 
 function confirmWicket() {
@@ -729,7 +914,12 @@ function confirmWicket() {
         dismissalBy: assistId
     });
 
-    balls++;
+    initBowler(bowler.value);
+
+    if (dismissalType !== "RUN_OUT") {
+        bowlerStats[bowler.value].wickets++;
+    }
+    ball();
 
     const alive = aliveBatsmenCount();
 
@@ -756,7 +946,6 @@ function confirmWicket() {
         );
 
         striker.value = remaining.player_id;
-        updateUI();
         return;
     }
 
@@ -764,7 +953,6 @@ function confirmWicket() {
     document.querySelectorAll(".keypad button").forEach(b => b.disabled = true);
     showNextBatsman();
 }
-
 
 function showNextBatsman() {
     selectionTitle.innerText = "Select Next Batsman";
@@ -812,6 +1000,8 @@ function confirmSelection() {
     if (selectionType === "BOWLER") {
         bowler.value = selectionSelect.value;
         waitingForNextBowler = false;
+
+        swapStrike();
     }
 
     selectionModal.classList.add("hidden");
@@ -847,28 +1037,71 @@ function saveBall(data) {
     isWicket: data.isWicket ?? 0
 });
 }
+
+function renderLiveBattingCard() {
+
+    let html = "";
+
+    const strikerPlayer = batPlayers.find(p => p.player_id == striker.value);
+    const nonStrikerPlayer = batPlayers.find(p => p.player_id == nonStriker.value);
+
+    [strikerPlayer, nonStrikerPlayer].forEach(p => {
+
+        if (!p) return;
+
+        const s = batsmanStats[p.player_id] || { runs: 0, balls: 0 };
+
+        html += `
+            <div class="stat-row">
+                <span>${p.full_name} <b style="color:#22c55e">*</b></span>
+                <span>${s.runs} (${s.balls})</span>
+            </div>
+        `;
+    });
+
+    document.getElementById("liveBattingCard").innerHTML = html;
+}
+
+function renderLiveBowlerCard() {
+
+    const bowlerPlayer = bowlPlayers.find(p => p.player_id == bowler.value);
+
+    if (!bowlerStats[bowler.value]) {
+        document.getElementById("liveBowlerCard").innerHTML =
+            `<div class='stat-row'>
+                <span>${bowlerPlayer?.full_name || "Bowler"}</span>
+                <span>0.0 - 0 - 0</span>
+            </div>`;
+        return;
+    }
+
+    const b = bowlerStats[bowler.value];
+
+    const oversText =
+        `${Math.floor(b.balls / BALLS_PER_OVER)}.${b.balls % BALLS_PER_OVER}`;
+
+    document.getElementById("liveBowlerCard").innerHTML = `
+        <div class="stat-row">
+            <span>${bowlerPlayer?.full_name || "Bowler"}</span>
+            <span>${oversText} - ${b.runs} - ${b.wickets}</span>
+        </div>
+    `;
+}
 function oversBowled() {
-    return balls / BALLS_PER_OVER;
+    return balls === 0 ? 0 : balls / BALLS_PER_OVER;
 }
 
 function currentRunRate() {
-    if (balls === 0) return 0;
-    return (runs / oversBowled()).toFixed(2);
+    if (balls === 0) return "0.00";
+
+    return ((runs * BALLS_PER_OVER) / balls).toFixed(2);
 }
 
 function projectedScore() {
     return Math.round(currentRunRate() * TOTAL_OVERS);
 }
 function partnershipStats() {
-    let runs = 0;
-    let balls = 0;
-
-    for (let i = outBatsmen.length; i < ballHistory.length; i++) {
-        runs += ballHistory[i].runs;
-        balls++;
-    }
-
-    return `${runs} (${balls})`;
+    return `${partnershipRuns} (${partnershipBalls})`;
 }
 
 function endInnings(reason) {
@@ -877,17 +1110,21 @@ function endInnings(reason) {
     inningsOver = true;
     scoringStarted = false;
 
-    score.innerText = `${runs}-${wickets}`;
-    overs.innerText = `${Math.floor(balls / BALLS_PER_OVER)}.${balls % BALLS_PER_OVER}`;
-    uiCRR.innerText = currentRunRate();
-    uiProj.innerText = projectedScore();
+    const finalOvers =
+        `${Math.floor(balls / BALLS_PER_OVER)}.${balls % BALLS_PER_OVER}`;
 
-    uiStriker.innerText = "—";
-    uiNonStriker.innerText = "—";
 
-    lastManBadge.classList.add("hidden");
+    document.getElementById("finalScore").innerText = `${runs}-${wickets}`;
+    document.getElementById("finalOvers").innerText = finalOvers;
+    document.getElementById("finalCRR").innerText = currentRunRate();
+    document.getElementById("inningsTitle").innerText =
+    `1st Inning – Team ${captainName}`;
 
-    alert("Innings Ended: " + reason);
+    renderBattingScorecard();
+
+    document.getElementById("inningsEndModal").classList.remove("hidden");
+
+    document.querySelectorAll("button, select").forEach(e => e.disabled = true);
 
     fetch("end_innings.php", {
         method: "POST",
@@ -897,10 +1134,113 @@ function endInnings(reason) {
             reason: reason
         })
     });
-
-    document.querySelectorAll("button, select").forEach(e => e.disabled = true);
 }
+
+function renderBattingScorecard() {
+
+    let html = "";
+
+    Object.keys(batsmanStats).forEach(id => {
+
+        const p = batPlayers.find(x => x.player_id == id);
+        const b = batsmanStats[id];
+
+        const notOut =
+            !outBatsmen.includes(parseInt(id)) ? " *" : "";
+
+        html += `
+            <tr>
+                <td>${p?.full_name || "Batsman"}${notOut}</td>
+                <td>${b.runs}</td>
+                <td>${b.balls}</td>
+                <td>${b.fours}</td>
+                <td>${b.sixes}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("battingScorecard").innerHTML = html;
+
+    renderBowlingScorecard();
+}
+
+function renderBowlingScorecard() {
+
+    let html = "";
+
+    Object.keys(bowlerStats).forEach(id => {
+
+        const p = bowlPlayers.find(x => x.player_id == id);
+        const b = bowlerStats[id];
+
+        const oversText =
+            `${Math.floor(b.balls / BALLS_PER_OVER)}.${b.balls % BALLS_PER_OVER}`;
+
+        html += `
+            <tr>
+                <td>${p?.full_name || "Bowler"}</td>
+                <td>${oversText}</td>
+                <td>${b.runs}</td>
+                <td>${b.wickets}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("bowlingScorecard").innerHTML = html;
+}
+
+function closeInningsModal() {
+    document.getElementById("inningsEndModal").classList.add("hidden");
+}
+
 updateUI();
 </script>
+<div id="inningsEndModal" class="hidden modal">
+    <div class="modal-box">
+        <h3 id="inningsTitle"></h3>
+
+       <div class="innings-summary">
+            <span>Score: <b id="finalScore"></b></span>
+            <span>Overs: <b id="finalOvers"></b></span>
+            <span>RR: <b id="finalCRR"></b></span>
+        </div>
+
+        <div class="score-section">
+            <h4>Batting</h4>
+
+            <table class="score-table">
+            <thead>
+            <tr>
+            <th>Batsman</th>
+            <th>R</th>
+            <th>B</th>
+            <th>4s</th>
+            <th>6s</th>
+            </tr>
+            </thead>
+            <tbody id="battingScorecard"></tbody>
+            </table>
+            </div>
+
+            <div class="score-section">
+                <h4>Bowling</h4>
+
+                <table class="score-table">
+                <thead>
+                <tr>
+                <th>Bowler</th>
+                <th>O</th>
+                <th>R</th>
+                <th>W</th>
+                </tr>
+                </thead>
+                <tbody id="bowlingScorecard"></tbody>
+                </table>
+                </div>
+        
+        <button class="confirm-btn" onclick="closeInningsModal()">OK</button>
+    </div>
+</div>
+
 </body>
 </html>

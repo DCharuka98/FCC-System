@@ -39,7 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: player_select.php?day=$playing_day_id");
     exit;
 }
+    
+    $today = date('Y-m-d');
+
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -59,7 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST">
         <label>Playing Date</label>
-        <input type="date" name="playing_date" required>
+        <input type="date"
+            name="playing_date"
+            value="<?= $today ?>"
+            min="<?= $today ?>"
+            max="<?= $today ?>"
+            required>
 
         <label>Venue</label>
         <input type="text" name="venue" required>
