@@ -13,10 +13,8 @@ if ($season_id <= 0) {
 $conn->begin_transaction();
 
 try {
-    // Deactivate all seasons
     $conn->query("UPDATE seasons SET status = 'Inactive'");
 
-    // Activate selected season
     $stmt = $conn->prepare(
         "UPDATE seasons SET status = 'Active' WHERE season_id = ?"
     );

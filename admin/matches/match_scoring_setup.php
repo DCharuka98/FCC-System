@@ -87,7 +87,6 @@ $bowlPlayers = $conn->query("
 
 </div>
 </main>
-
 <?php include "../partials/admin_footer.php"; ?>
 </body>
 </html>

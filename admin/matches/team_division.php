@@ -9,7 +9,6 @@ if ($playing_day_id <= 0 || empty($players)) {
     die("Invalid access");
 }
 
-/* Fetch selected players */
 $ids = implode(",", array_map("intval", $players));
 $result = $conn->query("
     SELECT player_id, full_name
@@ -23,7 +22,6 @@ while ($row = $result->fetch_assoc()) {
     $selectedPlayers[] = $row;
 }
 
-/*  SAVE  */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
 
     $teamA = $_POST['teamA'] ?? [];
@@ -31,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
     $captainA = $_POST['captainA'] ?? null;
     $captainB = $_POST['captainB'] ?? null;
 
-    /* VALIDATION */
     if (empty($teamA) || empty($teamB)) {
         die("Both teams must have players");
     }
@@ -44,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
         die("Captain must belong to their team");
     }
 
-    /* STEP 1: delete team players first */
     $conn->query("
         DELETE FROM playing_day_team_players
         WHERE team_id IN (
@@ -53,13 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
         )
     ");
 
-    /* STEP 2: delete teams */
     $conn->query("
         DELETE FROM playing_day_teams
         WHERE playing_day_id = $playing_day_id
     ");
 
-    /* ===== INSERT TEAM A ===== */
     $stmt = $conn->prepare("
         INSERT INTO playing_day_teams
         (playing_day_id, team_name, captain_id)
@@ -69,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
     $stmt->execute();
     $teamA_id = $stmt->insert_id;
 
-    /* TEAM A PLAYERS */
     $stmtPlayer = $conn->prepare("
         INSERT INTO playing_day_team_players
         (team_id, player_id)
@@ -80,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
         $stmtPlayer->execute();
     }
 
-    /* ===== INSERT TEAM B ===== */
     $stmt = $conn->prepare("
         INSERT INTO playing_day_teams
         (playing_day_id, team_name, captain_id)
@@ -90,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
     $stmt->execute();
     $teamB_id = $stmt->insert_id;
 
-    /* TEAM B PLAYERS */
     foreach ($teamB as $pid) {
         $stmtPlayer->bind_param("ii", $teamB_id, $pid);
         $stmtPlayer->execute();
@@ -125,7 +116,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
 
     <div class="team-division">
 
-        <!-- AVAILABLE -->
         <div class="team-panel">
             <h3>Available Players</h3>
             <div id="available">
@@ -141,7 +131,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
             </div>
         </div>
 
-        <!-- TEAM A -->
         <div class="team-panel">
             <h3>Team A</h3>
             <div id="teamA" class="team-list"></div>
@@ -152,7 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_teams'])) {
             </select>
         </div>
 
-        <!-- TEAM B -->
         <div class="team-panel">
             <h3>Team B</h3>
             <div id="teamB" class="team-list"></div>
@@ -262,7 +250,5 @@ function removeCaptainOption(select, id) {
     }
 }
 </script>
-
-
 </body>
 </html>

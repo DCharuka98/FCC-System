@@ -37,7 +37,6 @@ while ($row = $result->fetch_assoc()) {
 <div class="form-card">
     <h2>Divide Teams</h2>
 
-    <!-- SEARCH INPUT -->
     <input
         type="text"
         id="playerSearch"
@@ -45,7 +44,6 @@ while ($row = $result->fetch_assoc()) {
         autocomplete="off"
     >
 
-    <!-- SEARCH RESULTS -->
     <div id="searchResults"></div>
 
     <h3 style="margin-top:20px;">Selected Players</h3>
@@ -76,7 +74,6 @@ const searchResults = document.getElementById("searchResults");
 const selectedBox = document.getElementById("selectedPlayers");
 const selectedInputs = document.getElementById("selectedInputs");
 
-/* SEARCH */
 searchInput.addEventListener("input", () => {
     const q = searchInput.value.toLowerCase().trim();
     searchResults.innerHTML = "";
@@ -103,7 +100,6 @@ searchInput.addEventListener("input", () => {
     });
 });
 
-/* ADD */
 function addPlayer(id, name) {
     selectedPlayers.set(id, name);
     renderSelected();
@@ -111,13 +107,11 @@ function addPlayer(id, name) {
     searchInput.value = "";
 }
 
-/* REMOVE */
 function removePlayer(id) {
     selectedPlayers.delete(id);
     renderSelected();
 }
 
-/* RENDER */
 function renderSelected() {
     selectedBox.innerHTML = "";
     selectedInputs.innerHTML = "";

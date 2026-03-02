@@ -23,14 +23,13 @@ require_once "admin_guard.php";
             <a href="../auth/logout.php" class="logout-btn">Logout</a>
         </div>
 
-        <!-- WELCOME -->
         <h1>Welcome, <?= htmlspecialchars($_SESSION['username']); ?> 👋</h1>
         <p class="subtitle">
             Manage players and system settings of the FCC scoring platform
         </p>
 
-        <!-- CARDS -->
         <div class="cards">
+
             <a href="players.php" class="card">
                 <h3>👥 Manage Players</h3>
                 <p>View, activate, deactivate and manage player profiles</p>
@@ -50,7 +49,13 @@ require_once "admin_guard.php";
                 <h3>🗓 Start Playing Day</h3>
                 <p>Create a new playing day for matches</p>
             </a>
-        </div>
+
+            <a href="rankings.php" class="card">
+                <h3>🏆 View Rankings</h3>
+                <p>See batting, bowling and fielding rankings</p>
+            </a>
+
+</div>
     </div>
     </main>
     <?php include "partials/admin_footer.php"; ?>

@@ -7,15 +7,19 @@ $innings_id = (int)($_GET['innings'] ?? 0);
 if ($match_id <= 0 || $innings_id <= 0) die("Invalid request");
 
 $match = $conn->query("
-    SELECT batting_team_id, bowling_team_id, overs, balls_per_over
-    FROM matches
-    WHERE match_id = $match_id
+SELECT 
+i.batting_team_id,
+i.bowling_team_id,
+m.overs,
+m.balls_per_over
+FROM innings i
+JOIN matches m ON m.match_id=i.match_id
+WHERE i.innings_id=$innings_id
 ")->fetch_assoc();
 
 $batting_team_id = $match['batting_team_id'];
 $bowling_team_id = $match['bowling_team_id'];
 
-/* Batting players */
 $batPlayers = [];
 $res = $conn->query("
     SELECT p.player_id, p.full_name
@@ -25,7 +29,6 @@ $res = $conn->query("
 ");
 while ($r = $res->fetch_assoc()) $batPlayers[] = $r;
 
-/* Bowling players */
 $bowlPlayers = [];
 $res = $conn->query("
     SELECT p.player_id, p.full_name
@@ -35,7 +38,6 @@ $res = $conn->query("
 ");
 while ($r = $res->fetch_assoc()) $bowlPlayers[] = $r;
 
-/* Load innings state */
 $state = $conn->query("
     SELECT COUNT(*) balls,
            SUM(runs + IFNULL(extra_runs,0)) runs,
@@ -43,6 +45,16 @@ $state = $conn->query("
     FROM balls
     WHERE match_id = $match_id AND innings_id = $innings_id
 ")->fetch_assoc();
+
+$inn = $conn->query("
+SELECT innings_number, target
+FROM innings
+WHERE innings_id=$innings_id
+")->fetch_assoc();
+
+$innings_number = (int)$inn['innings_number'];
+$target = (int)$inn['target'];
+$isSecond = $innings_number === 2;
 
 $outBatsmen = [];
 $res = $conn->query("
@@ -98,8 +110,8 @@ $teamRow = $conn->query("
 
 $battingTeamName = $teamRow['team_name'] ?? 'Team';
 $captainName = $teamRow['captain_name'] ?? '';
-?>
 
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -380,7 +392,7 @@ select {
     padding: 14px;
     border-radius: 12px;
     background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);   /* ⭐ outline */
+    border: 1px solid rgba(255,255,255,0.06); 
 }
 
 .innings-summary {
@@ -401,6 +413,14 @@ select {
 #inningsTitle {
     text-transform: uppercase;
 }
+
+.innings-target {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(34,197,94,.12);
+    font-weight: 700;
+}
 </style>
 </head>
 
@@ -410,7 +430,6 @@ select {
 <div class="page-container">
 
 <div class="scoring-grid">
-<!-- LEFT -->
 <div class="panel setup-panel" id="setupPanel">
     <h3 class="panel-title">Match Setup</h3>
 
@@ -452,7 +471,6 @@ select {
     <button class="start-btn" onclick="startScoring()">▶ Start Scoring</button>
 </div>
 
-<!-- CENTER -->
 <div class="panel center-panel">
 
     <h1 id="score">0-0</h1>
@@ -461,6 +479,7 @@ select {
         CRR: <span id="uiCRR">0.00</span>        
     </p>
 
+    <p id="targetBox" style="color:#22c55e;font-weight:700;"></p>
     <div class="stat-row">
         <span class="stat-label">Extras</span>
         <span class="stat-value" id="uiExtras">0</span>
@@ -536,7 +555,6 @@ select {
     </div>
 </div>
 
-<!-- RIGHT -->
 <div class="panel match-stats">
     <h3 class="panel-title">Match Stats</h3>
 
@@ -562,6 +580,8 @@ const assistBox = document.getElementById("assistPlayerBox");
 const assistPlayer = document.getElementById("assistPlayer");
 const battingTeamName = <?= json_encode($battingTeamName) ?>;
 const captainName = <?= json_encode($captainName) ?>;
+const IS_SECOND = <?= $isSecond ? 'true':'false' ?>;
+const TARGET = <?= $target ?: 0 ?>;
 
 dismissalTypeEl.addEventListener("change", () => {
     const type = dismissalTypeEl.value;
@@ -581,6 +601,10 @@ function loadFielders() {
         assistPlayer.innerHTML +=
           `<option value="${p.player_id}">${p.full_name}</option>`;
     });
+}
+
+if (IS_SECOND && TARGET) {
+    document.getElementById("targetBox").innerText = "Target: " + TARGET;
 }
 
 let runs = <?= $total_runs ?>;
@@ -667,6 +691,7 @@ function run(r) {
 
     batsmanStats[striker.value].runs += r;
     batsmanStats[striker.value].balls += 1;
+
     if (r === 4) batsmanStats[striker.value].fours++;
     if (r === 6) batsmanStats[striker.value].sixes++;
 
@@ -677,13 +702,20 @@ function run(r) {
     partnershipBalls++;
 
     runs += r;
+
     saveBall({ runs: r });
 
-    if (r % 2 === 1 && !lastBatsmanOnly) swapStrike();
-    
+    if (IS_SECOND && TARGET && runs >= TARGET) {
+        updateUI();
+        endInnings("Target chased");
+        return;
+    }
+
+    if (r % 2 === 1 && !lastBatsmanOnly) {
+        swapStrike();
+    }
 
     ball();
-
 }
 
 
@@ -915,6 +947,7 @@ function confirmWicket() {
     });
 
     initBowler(bowler.value);
+    bowlerStats[bowler.value].balls++;
 
     if (dismissalType !== "RUN_OUT") {
         bowlerStats[bowler.value].wickets++;
@@ -1011,10 +1044,12 @@ function confirmSelection() {
 
 function saveBall(data) {
 
+    const currentBall = balls + 1; 
+
     const overNo = Math.floor(balls / BALLS_PER_OVER) + 1;
     const ballNo = (balls % BALLS_PER_OVER) + 1;
 
-    fetch("save_ball.php", {
+    return fetch("save_ball.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1032,10 +1067,6 @@ function saveBall(data) {
             dismissal_by_player: data.dismissalBy ?? null
         })
     });
-    ballHistory.push({
-    runs: data.runs ?? 0,
-    isWicket: data.isWicket ?? 0
-});
 }
 
 function renderLiveBattingCard() {
@@ -1113,27 +1144,51 @@ function endInnings(reason) {
     const finalOvers =
         `${Math.floor(balls / BALLS_PER_OVER)}.${balls % BALLS_PER_OVER}`;
 
-
     document.getElementById("finalScore").innerText = `${runs}-${wickets}`;
     document.getElementById("finalOvers").innerText = finalOvers;
     document.getElementById("finalCRR").innerText = currentRunRate();
+
     document.getElementById("inningsTitle").innerText =
-    `1st Inning – Team ${captainName}`;
+    `${IS_SECOND ? "2nd Innings" : "1st Innings"} – ${battingTeamName} (C: ${captainName})`;
 
     renderBattingScorecard();
 
+    if (!IS_SECOND) {
+        const target = runs + 1;
+        document.getElementById("targetScore").innerText = target;
+        document.querySelector(".innings-target").style.display = "block";
+    } else {
+        document.querySelector(".innings-target").style.display = "none";
+    }
+
     document.getElementById("inningsEndModal").classList.remove("hidden");
 
-    document.querySelectorAll("button, select").forEach(e => e.disabled = true);
+    document.querySelectorAll(".keypad button, #setupPanel select, #setupPanel button")
+    .forEach(e => e.disabled = true);
 
     fetch("end_innings.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             innings_id: <?= $innings_id ?>,
+            total_runs: runs,
+            wickets: wickets,
+            balls: balls,
+            overs: TOTAL_OVERS,
+            target: (!IS_SECOND ? (runs + 1) : null),
             reason: reason
         })
-    });
+    })
+        .then(r => r.json())
+    .then(res => {
+
+        console.log("end innings response:", res);
+
+        if (IS_SECOND) {
+            window.location.href = "match_summary.php?match=<?= $match_id ?>";
+        }
+    })
+    .catch(e => console.error(e));
 }
 
 function renderBattingScorecard() {
@@ -1193,6 +1248,28 @@ function closeInningsModal() {
     document.getElementById("inningsEndModal").classList.add("hidden");
 }
 
+function startSecondInnings() {
+
+    fetch("start_second_innings.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            match_id: <?= $match_id ?>,
+            first_innings_id: <?= $innings_id ?>
+        })
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (!res.success) {
+            alert("Failed to start 2nd innings");
+            return;
+        }
+
+        window.location.href =
+            `match_scoring.php?match=<?= $match_id ?>&innings=${res.innings_id}`;
+    });
+}
+
 updateUI();
 </script>
 <div id="inningsEndModal" class="hidden modal">
@@ -1238,9 +1315,20 @@ updateUI();
                 </table>
                 </div>
         
-        <button class="confirm-btn" onclick="closeInningsModal()">OK</button>
+        <div class="innings-target">
+            Target: <b id="targetScore"></b>
+        </div>
+
+        <?php if(!$isSecond): ?>
+            <button id="startSecondBtn" class="confirm-btn" onclick="startSecondInnings()">
+                Start 2nd Innings
+            </button>
+            <?php else: ?>
+            <button class="confirm-btn" onclick="window.location='match_summary.php?match=<?= $match_id ?>'">
+                View Match Summary
+            </button>
+        <?php endif; ?>
     </div>
 </div>
-
 </body>
 </html>

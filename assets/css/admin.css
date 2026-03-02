@@ -1,4 +1,3 @@
-/* GLOBAL */
 * {
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -24,14 +23,12 @@ body {
     color: #ffffff;
 }
 
-/* DASHBOARD  */
 .dashboard-hero {
     max-width: 1000px;
     margin: 0 auto;
     padding: 30px;
 }
 
-/* Dashboard header */
 .dashboard-header {
     max-width: 100%;
     display: flex;
@@ -57,7 +54,6 @@ body {
     font-weight: 600;
 }
 
-/* Dashboard text */
 .dashboard-hero h1 {
     font-size: 34px;
     margin-bottom: 10px;
@@ -69,7 +65,6 @@ body {
     line-height: 1.6;
 }
 
-/* Dashboard cards */
 .cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -105,7 +100,6 @@ body {
     line-height: 1.6;
 }
 
-/*NAVBAR (OTHER ADMIN PAGES)*/
 .admin-navbar {
     position: fixed;
     top: 0;
@@ -148,11 +142,24 @@ body {
 }
 
 .nav-links a:hover,
-.nav-links a.active {
-    color: #0d6efd;
+
+.nav-links a.active{
+    color:#3b82f6;
+    font-weight:700;
+    position:relative;
 }
 
-/* Logout button */
+.nav-links a.active::after{
+    content:"";
+    position:absolute;
+    bottom:-6px;
+    left:0;
+    width:100%;
+    height:2px;
+    background:#3b82f6;
+    border-radius:2px;
+}
+
 .logout-btn {
     background: #dc3545;
     padding: 8px 16px;
@@ -167,7 +174,6 @@ body {
     background: #b02a37;
 }
 
-/* PAGE CONTAINER */
 .page-container {
     max-width: 1100px;
     margin: 0 auto;
@@ -175,8 +181,6 @@ body {
    
 }
 
-
-/* PANEL (TABLE / FORM)*/
 .panel {
     background: rgba(18,18,18,0.95);
     border-radius: 14px;
@@ -184,7 +188,6 @@ body {
     box-shadow: 0 12px 30px rgba(0,0,0,0.6);
 }
 
-/* PLAYERS TABLE*/
 .players-table {
     width: 100%;
     border-collapse: collapse;
@@ -226,7 +229,6 @@ body {
     text-decoration: underline;
 }
 
-/* FORMS (ADD PLAYER) */
 .form-panel {
     max-width: 520px;
 }
@@ -262,7 +264,6 @@ form button:hover {
     background: #084298;
 }
 
-/* Center form */
 .form-wrapper {
     display: flex;
     justify-content: center;
@@ -283,7 +284,6 @@ form button:hover {
     text-align: center;
     margin-bottom: 20px;
 }
-/*  BUTTON BASE  */
 .btn {
     padding: 6px 14px;
     border-radius: 6px;
@@ -294,7 +294,6 @@ form button:hover {
     transition: all 0.3s ease;
 }
 
-/*  EDIT (BLUE)  */
 .btn-edit {
     color: #0d6efd;
 }
@@ -304,7 +303,6 @@ form button:hover {
     text-decoration: underline;
 }
 
-/*  ACTIVATE (GREEN)  */
 .btn-success {
     color: #28a745;
 }
@@ -313,7 +311,6 @@ form button:hover {
     color: #6fe39c;
 }
 
-/*  DEACTIVATE (RED)  */
 .btn-danger {
     color: #dc3545;
 }
@@ -322,7 +319,6 @@ form button:hover {
     color: #ff7b86;
 }
 
-/* RESET PASSWORD (ORANGE)  */
 .btn-warning {
     color: #ffc107;
 }
@@ -331,7 +327,6 @@ form button:hover {
     color: #ffd65a;
 }
 
-/*ALERTS */
 .alert {
     padding: 14px;
     border-radius: 8px;
@@ -350,7 +345,6 @@ form button:hover {
     color: #28a745;
     border: 1px solid #28a745;
 }
-/* PLAYER STATS  */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -378,7 +372,6 @@ form button:hover {
     font-weight: 700;
 }
 
-/* Colors */
 .stat-active p { color: #28a745; }
 
 .stat-inactive p { color: #dc3545; }
@@ -388,7 +381,6 @@ form button:hover {
     transition: 0.3s;
 }
 
-/*FILTER BAR  */
 .filter-bar {
     display: grid;
     grid-template-columns: 1fr 220px auto;
@@ -421,13 +413,11 @@ form button:hover {
     cursor: pointer;
 }
 
-/* Actions */
 .filter-actions {
     display: flex;
     gap: 10px;
 }
 
-/* Buttons */
 .btn-primary {
     background: #0d6efd;
     color: #fff;
@@ -487,7 +477,6 @@ form button:hover {
     color: #666;
 }
 
-/*  FORM CARD (GLOBAL)  */
 .form-card {
     background: rgba(18,18,18,0.95);
     border-radius: 16px;
@@ -504,7 +493,6 @@ form button:hover {
     font-size: 24px;
 }
 
-/*  FORM ELEMENTS  */
 .form-card label {
     display: block;
     margin-top: 16px;
@@ -524,7 +512,6 @@ form button:hover {
     font-size: 15px;
 }
 
-/*  REMOVE BUTTON (FOR PLAYER LIST)  */
 .form-card .btn-remove {
     background: #dc3545 !important;
     color: #ffffff !important;
@@ -539,7 +526,6 @@ form button:hover {
     background: #b02a37 !important;
 }
 
-/*  ADD BUTTON  */
 .form-card .btn-success {
     background: #198754;
     color: #ffffff;
@@ -615,7 +601,6 @@ form button:hover {
     gap: 20px;
 }
 
-/* Panel */
 .team-panel {
     background: #111;
     padding: 18px;
@@ -629,7 +614,6 @@ form button:hover {
     margin-bottom: 15px;
 }
 
-/* Player row */
 .player-row {
     display: flex;
     align-items: center;
@@ -641,14 +625,12 @@ form button:hover {
     margin-bottom: 10px;
 }
 
-/* Player name */
 .player-name {
     flex: 1;
     font-size: 14px;
     font-weight: 500;
 }
 
-/* Buttons */
 .player-actions {
     display: flex;
     gap: 6px;
@@ -668,12 +650,10 @@ form button:hover {
     background: #084298;
 }
 
-/* Team list */
 .team-list {
     min-height: 220px;
 }
 
-/* Captain select */
 .captain-label {
     display: block;
     margin-top: 14px;
@@ -689,7 +669,6 @@ form button:hover {
     border: none;
 }
 
-/* ===== LIVE SCORING ===== */
 .scoring-card {
     max-width: 380px;
     margin: 0 auto;
@@ -760,8 +739,6 @@ form button:hover {
     background: #b02a37;
 }
 
-
-/*  RESPONSIVE */
 @media (max-width: 768px) {
     .dashboard-hero {
         margin: 60px 20px;
@@ -801,6 +778,31 @@ form button:hover {
     .btn-extra {
         font-size: 16px;
         padding: 14px 0;
+    }
+    .ranking-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+    background:#111827;
+    border-radius:10px;
+    overflow:hidden;
+    }
+
+    .ranking-table th,
+    .ranking-table td{
+    padding:10px;
+    text-align:left;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+
+    .ranking-table th{
+    background:#1f2937;
+    color:#38bdf8;
+    font-weight:700;
+    }
+
+    .ranking-table tr:hover{
+    background:rgba(255,255,255,0.05);
     }
 }
 

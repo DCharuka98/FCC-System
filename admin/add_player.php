@@ -16,14 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "All fields are required";
     } else {
 
-        // 🔐 Hash password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            // Start transaction
             $conn->begin_transaction();
 
-            // 1️⃣ Insert into users table
             $stmt1 = $conn->prepare(
                 "INSERT INTO users (username, password, role)
                  VALUES (?, ?, 'Player')"
@@ -33,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $user_id = $conn->insert_id;
 
-            // 2️⃣ Insert into players table
             $stmt2 = $conn->prepare(
                 "INSERT INTO players (full_name, joined_date, status)
                  VALUES (?, ?, ?)"
@@ -43,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $player_id = $conn->insert_id;
 
-            // 3️⃣ Link user ↔ player
             $stmt3 = $conn->prepare(
                 "INSERT INTO user_player (user_id, player_id)
                  VALUES (?, ?)"
@@ -51,10 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt3->bind_param("ii", $user_id, $player_id);
             $stmt3->execute();
 
-            // Commit
             $conn->commit();
 
-            // Redirect to manage players
             header("Location: players.php");
             exit;
 

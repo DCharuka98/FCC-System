@@ -2,7 +2,6 @@
 require_once "../admin_guard.php";
 require_once "../../config/db.php";
 
-/* Get active seasons */
 $seasons = $conn->query("
     SELECT season_id, season_name
     FROM seasons
@@ -52,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" href="../../assets/images/Logo white.png">    
 </head>
 <body class="admin-layout">
-
+    
 <?php include "../partials/admin_nav.php"; ?>
 
 <main class="admin-content">

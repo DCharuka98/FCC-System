@@ -2,9 +2,6 @@
 require_once "admin_guard.php";
 require_once "../config/db.php";
 
-/* =====================
-   HANDLE POST (UPDATE PASSWORD)
-===================== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $user_id = (int) ($_POST['user_id'] ?? 0);
@@ -29,10 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Hash password
     $hashed = password_hash($new, PASSWORD_DEFAULT);
 
-    // Update DB
     $stmt = $conn->prepare(
         "UPDATE users SET password = ? WHERE user_id = ?"
     );
@@ -44,9 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-/* =====================
-   HANDLE GET (SHOW FORM)
-===================== */
 $user_id = (int) ($_GET['user_id'] ?? 0);
 
 if ($user_id <= 0) {
@@ -68,7 +60,6 @@ if ($user_id <= 0) {
 
 <div class="page-container">
 
-    <!-- ALERTS -->
     <?php if (!empty($_SESSION['error'])): ?>
         <div class="alert alert-error">
             <?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
