@@ -1,5 +1,6 @@
 <?php
-require_once "../admin_guard.php";
+require_once "../../role_guard.php";
+allowRoles(['admin','scorer']);
 require_once "../../config/db.php";
 
 $playing_day_id = (int)($_GET['day'] ?? 0);
@@ -16,7 +17,7 @@ if ($playing_day_id <= 0) {
 </head>
 <body class="admin-layout">
 
-<?php include "../partials/admin_nav.php"; ?>
+<?php include "../../partials/navbar.php"; ?>
 
 <main class="admin-content">
 <div class="page-container">

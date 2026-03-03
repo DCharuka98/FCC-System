@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<?php include "partials/admin_nav.php"; ?>
+<?php include "../partials/navbar.php"; ?>
 
 <div class="page-container">
     <div class="form-wrapper">

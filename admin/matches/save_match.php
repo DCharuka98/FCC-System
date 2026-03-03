@@ -1,5 +1,6 @@
 <?php
-require_once "../admin_guard.php";
+require_once "../../role_guard.php";
+allowRoles(['admin','scorer']);
 require_once "../../config/db.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

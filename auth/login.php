@@ -29,7 +29,6 @@ if (!password_verify($password, $user['password'])) {
     exit;
 }
 
-/* Check if Player is active */
 if ($user['role'] === 'Player') {
     $check = $conn->prepare("
         SELECT p.status 

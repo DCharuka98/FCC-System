@@ -56,7 +56,7 @@ if ($user_id <= 0) {
 </head>
 <body>
 
-<?php include "partials/admin_nav.php"; ?>
+<?php include "../partials/navbar.php"; ?>
 
 <div class="page-container">
 

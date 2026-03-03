@@ -26,7 +26,7 @@ $result = $conn->query("
 </head>
 <body class="admin-layout">
 
-<?php include "partials/admin_nav.php"; ?>
+<?php include "../partials/navbar.php"; ?>
 <main class="admin-content">
 <div class="page-container">
 

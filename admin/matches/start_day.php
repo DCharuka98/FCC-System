@@ -1,5 +1,6 @@
 <?php
-require_once "../admin_guard.php";
+require_once "../../role_guard.php";
+allowRoles(['admin','scorer']);
 require_once "../../config/db.php";
 
 $seasons = $conn->query("
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="admin-layout">
     
-<?php include "../partials/admin_nav.php"; ?>
+<?php include "../../partials/navbar.php"; ?>
 
 <main class="admin-content">
 <div class="page-container">

@@ -67,7 +67,7 @@ $counts = $countResult->fetch_assoc();
 </head>
 <body>
 
-<?php include "partials/admin_nav.php"; ?>
+<?php include "../partials/navbar.php"; ?>
 <main class="admin-content">
 <div class="page-container">
     <h2>MANAGE PLAYERS</h2>
@@ -139,7 +139,6 @@ $counts = $countResult->fetch_assoc();
                     <?= $row['status'] ?>
                 </td>
                 <td>
-                    <!-- Activate / Deactivate -->
                     <a href="toggle_player.php?player_id=<?= $row['player_id'] ?>"
                     class="btn <?= ($row['status'] === 'Active') ? 'btn-danger' : 'btn-success' ?>">
                         <?= ($row['status'] === 'Active') ? 'Deactivate' : 'Activate' ?>
@@ -147,7 +146,6 @@ $counts = $countResult->fetch_assoc();
 
                     &nbsp;|&nbsp;
 
-                    <!-- Edit -->
                     <a href="edit_player.php?player_id=<?= $row['player_id'] ?>"
                     class="btn btn-edit">
                         Edit
@@ -155,7 +153,6 @@ $counts = $countResult->fetch_assoc();
 
                     &nbsp;|&nbsp;
 
-                    <!-- Reset Password -->
                     <a href="reset_password.php?user_id=<?= $row['user_id'] ?>"
                     class="btn btn-warning">
                         Reset Password

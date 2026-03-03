@@ -8,7 +8,6 @@ if ($season_id <= 0) {
     die("Invalid request");
 }
 
-/* Fetch season */
 $stmt = $conn->prepare("
     SELECT season_name, start_date, end_date
     FROM seasons
@@ -22,7 +21,6 @@ if (!$season) {
     die("Season not found");
 }
 
-/* Handle update */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $name  = trim($_POST['season_name']);
@@ -57,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<?php include "partials/admin_nav.php"; ?>
+<?php include "../partials/navbar.php"; ?>
 
 <div class="page-container">
     <div class="form-wrapper">

@@ -54,7 +54,7 @@ require_once "admin_guard.php";
 
 <body class="admin-layout">
 
-<?php include "partials/admin_nav.php"; ?>
+<?php include "../partials/navbar.php"; ?>
 
 <main class="admin-content">
 <div class="manual-container">

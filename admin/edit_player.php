@@ -41,7 +41,7 @@ $player = $result->fetch_assoc();
 </head>
 <body>
 
-<?php include "partials/admin_nav.php"; ?>
+<?php include "../partials/navbar.php"; ?>
 
 <div class="page-container">
 
