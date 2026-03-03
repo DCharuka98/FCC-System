@@ -54,8 +54,11 @@ require_once "admin_guard.php";
                 <h3>🏆 View Rankings</h3>
                 <p>See batting, bowling and fielding rankings</p>
             </a>
-
-</div>
+            <a href="user_manual.php" class="card">
+                <h3>📘 User Manual</h3>
+                <p>View admin system guide and usage instructions</p>
+            </a>
+        </div>
     </div>
     </main>
     <?php include "partials/admin_footer.php"; ?>

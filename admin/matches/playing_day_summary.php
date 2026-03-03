@@ -70,6 +70,7 @@ while($r=$res->fetch_assoc()) $matches[]=$r;
 <head>
 <title>Playing Day Summary</title>
 <link rel="stylesheet" href="../../assets/css/admin.css">
+<link rel="icon" href="../assets/images/Logo white.png">
 
 <style>
 *{

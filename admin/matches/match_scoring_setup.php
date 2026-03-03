@@ -34,6 +34,7 @@ $bowlPlayers = $conn->query("
 <head>
     <title>Scoring Setup | FCC</title>
     <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="icon" href="../assets/images/Logo white.png">
 </head>
 <body class="admin-layout">
 

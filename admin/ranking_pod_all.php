@@ -12,7 +12,9 @@ COALESCE(COUNT(pd.player_of_the_day)*5,0) total_pod
 FROM players p
 LEFT JOIN playing_days pd 
     ON pd.player_of_the_day = p.player_id
-GROUP BY p.player_id
+WHERE p.status = 'Active'
+GROUP BY p.player_id, p.full_name
+HAVING total_pod > 0
 ORDER BY total_pod DESC
 ");
 
@@ -37,6 +39,7 @@ if($search != ''){
 <title>Player of the Day Rankings</title>
 <link rel="stylesheet" href="../assets/css/admin.css">
 <link rel="stylesheet" href="../assets/css/ranking.css">
+<link rel="icon" href="../assets/images/Logo white.png">
 </head>
 
 <body class="admin-layout">

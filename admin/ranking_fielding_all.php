@@ -12,7 +12,9 @@ COALESCE(SUM((s.catches*8)+(s.stumpings*9)+(s.runouts*10)),0) total_fielding
 FROM players p
 LEFT JOIN player_match_statistics s 
     ON s.player_id = p.player_id
-GROUP BY p.player_id
+WHERE p.status = 'Active'
+GROUP BY p.player_id, p.full_name
+HAVING total_fielding > 0
 ORDER BY total_fielding DESC
 ");
 
@@ -37,6 +39,7 @@ if($search != ''){
 <title>Fielding Rankings</title>
 <link rel="stylesheet" href="../assets/css/admin.css">
 <link rel="stylesheet" href="../assets/css/ranking.css">
+<link rel="icon" href="../assets/images/Logo white.png">
 </head>
 
 <body class="admin-layout">

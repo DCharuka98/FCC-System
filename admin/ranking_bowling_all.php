@@ -6,14 +6,16 @@ $search = $_GET['search'] ?? '';
 
 $fullRanking = $conn->query("
 SELECT 
-p.player_id,
-p.full_name,
-COALESCE(SUM(s.wickets_taken),0) total_wickets
+    p.player_id,
+    p.full_name,
+    COALESCE(SUM(s.wickets_taken),0) AS total_wickets
 FROM players p
 LEFT JOIN player_match_statistics s 
     ON s.player_id = p.player_id
-GROUP BY p.player_id
-ORDER BY total_wickets DESC
+WHERE p.status = 'Active'
+GROUP BY p.player_id, p.full_name
+HAVING total_wickets > 0
+ORDER BY total_wickets DESC, p.full_name ASC
 ");
 
 $rankings = [];
@@ -37,6 +39,7 @@ if($search != ''){
 <title>Bowling Rankings</title>
 <link rel="stylesheet" href="../assets/css/admin.css">
 <link rel="stylesheet" href="../assets/css/ranking.css">
+<link rel="icon" href="../assets/images/Logo white.png">
 </head>
 
 <body class="admin-layout">

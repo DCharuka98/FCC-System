@@ -81,6 +81,7 @@ if($second['total_runs'] > $first['total_runs']){
 <head>
 <title>Match Summary</title>
 <link rel="stylesheet" href="../../assets/css/admin.css">
+<link rel="icon" href="../assets/images/Logo white.png">
 
 <style>
 *{

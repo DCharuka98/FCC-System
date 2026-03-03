@@ -12,7 +12,9 @@ COALESCE(SUM(s.runs_scored),0) total_runs
 FROM players p
 LEFT JOIN player_match_statistics s 
     ON s.player_id = p.player_id
-GROUP BY p.player_id
+WHERE p.status = 'Active'
+GROUP BY p.player_id, p.full_name
+HAVING total_runs > 0
 ORDER BY total_runs DESC
 ");
 
@@ -37,6 +39,7 @@ if($search != ''){
 <title>Batting Rankings</title>
 <link rel="stylesheet" href="../assets/css/admin.css">
 <link rel="stylesheet" href="../assets/css/ranking.css">
+<link rel="icon" href="../assets/images/Logo white.png">
 </head>
 
 <body class="admin-layout">
