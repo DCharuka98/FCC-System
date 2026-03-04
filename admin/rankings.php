@@ -1,6 +1,6 @@
 <?php
 require_once "../role_guard.php";
-allowRoles(['admin','scorer']);
+allowRoles(['admin','scorer','player']);
 require_once "../config/db.php";
 
 function getTop10($conn,$sql){

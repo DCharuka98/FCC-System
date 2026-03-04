@@ -14,50 +14,60 @@ $role = $_SESSION['role'] ?? '';
 
         <?php if ($role === 'admin'): ?>
             <a href="/fcc-system/admin/dashboard.php"
-               class="<?= $currentPage == 'dashboard.php' ? 'active' : '' ?>">
-               Dashboard
-            </a>
+               class="<?= $currentPage == 'dashboard.php' ? 'active' : '' ?>">Dashboard</a>
+
         <?php elseif ($role === 'scorer'): ?>
             <a href="/fcc-system/scorer/dashboard.php"
-               class="<?= $currentPage == 'dashboard.php' ? 'active' : '' ?>">
-               Dashboard
-            </a>
+               class="<?= $currentPage == 'dashboard.php' ? 'active' : '' ?>">Dashboard</a>
+
         <?php elseif ($role === 'player'): ?>
             <a href="/fcc-system/player/dashboard.php"
-               class="<?= $currentPage == 'dashboard.php' ? 'active' : '' ?>">
-               Dashboard
-            </a>
+               class="<?= $currentPage == 'dashboard.php' ? 'active' : '' ?>">Dashboard</a>
         <?php endif; ?>
+
 
         <?php if ($role === 'admin'): ?>
+
             <a href="/fcc-system/admin/players.php"
-               class="<?= $currentPage == 'players.php' ? 'active' : '' ?>">
-               Players
-            </a>
+               class="<?= $currentPage == 'players.php' ? 'active' : '' ?>">Players</a>
 
             <a href="/fcc-system/admin/seasons.php"
-               class="<?= $currentPage == 'seasons.php' ? 'active' : '' ?>">
-               Seasons
-            </a>
+               class="<?= $currentPage == 'seasons.php' ? 'active' : '' ?>">Seasons</a>
+
         <?php endif; ?>
+
 
         <?php if (in_array($role, ['admin','scorer'])): ?>
+
             <a href="/fcc-system/admin/add_player.php"
-               class="<?= $currentPage == 'add_player.php' ? 'active' : '' ?>">
-               Add Player
-            </a>
+               class="<?= $currentPage == 'add_player.php' ? 'active' : '' ?>">Add Player</a>
 
             <a href="/fcc-system/admin/matches/start_day.php"
-               class="<?= $currentPage == 'start_day.php' ? 'active' : '' ?>">
-               Match Scoring
-            </a>
+               class="<?= $currentPage == 'start_day.php' ? 'active' : '' ?>">Match Scoring</a>
+
         <?php endif; ?>
 
+
         <?php if (in_array($role, ['admin','scorer','player'])): ?>
+
             <a href="/fcc-system/admin/rankings.php"
-               class="<?= strpos($currentPage, 'ranking') !== false || $currentPage == 'rankings.php' ? 'active' : '' ?>">
-               Rankings
+               class="<?= strpos($currentPage,'ranking') !== false ? 'active' : '' ?>">Rankings</a>
+
+        <?php endif; ?>
+
+
+        <?php if ($role === 'player'): ?>
+
+            <a href="/fcc-system/player/change_password.php"
+               class="<?= $currentPage == 'change_password.php' ? 'active' : '' ?>">
+               Change Password
             </a>
+
+            <a href="/fcc-system/player/edit_profile.php"
+               class="<?= $currentPage == 'edit_profile.php' ? 'active' : '' ?>">
+               Edit Profile
+            </a>
+
         <?php endif; ?>
 
     </div>

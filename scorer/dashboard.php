@@ -7,6 +7,16 @@ require_once "scorer_guard.php";
     <title>Scorer Dashboard | FCC</title>
     <link rel="icon" href="../assets/images/Logo white.png">
     <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+    .cards{
+        display:grid;
+        grid-template-columns:repeat(4, 1fr);
+        gap:25px;
+        width: 1300px;
+        margin-top:40px;
+        margin-left: -170px;
+    }
+    </style>
 </head>
 
 <body class="admin-layout">
@@ -43,8 +53,8 @@ require_once "scorer_guard.php";
 </a>
 
 <a href="user_manual.php" class="card">
-                <h3>📘 User Manual</h3>
-                <p>View scorer system guide and usage instructions</p>
+    <h3>📘 User Manual</h3>
+    <p>View scorer system guide and usage instructions</p>
 </a>
 </div>
 
