@@ -4,6 +4,7 @@ require_once "admin_guard.php";
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <title>Admin Dashboard | FCC</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

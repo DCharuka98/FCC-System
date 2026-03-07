@@ -62,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
+    <body class="admin-layout">
     <title>Add Player | FCC</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
     <link rel="icon" href="../assets/images/Logo white.png">
@@ -99,9 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit">Add Player</button>
 
             </form>
-
         </div>
-
     </div>
 
 </div>

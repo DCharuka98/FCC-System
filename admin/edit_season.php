@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
+    <body class="admin-layout">
     <title>Edit Season | FCC</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
     <link rel="icon" href="../assets/images/Logo white.png">
