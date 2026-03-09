@@ -252,5 +252,6 @@ function removeCaptainOption(select, id) {
     }
 }
 </script>
+<?php include "../partials/admin_footer.php"; ?>
 </body>
 </html>

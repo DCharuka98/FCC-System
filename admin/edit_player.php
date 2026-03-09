@@ -72,6 +72,6 @@ $player = $result->fetch_assoc();
     </div>
 
 </div>
-
+<?php include "partials/admin_footer.php"; ?>
 </body>
 </html>

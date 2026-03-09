@@ -12,12 +12,12 @@ if ($playing_day_id <= 0) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Create Match</title>
-    <link rel="stylesheet" href="../../assets/css/admin.css">
-    <link rel="icon" href="../assets/images/Logo white.png">
+<title>Create Match</title>
+<link rel="stylesheet" href="../../assets/css/admin.css">
+<link rel="icon" href="../../assets/images/Logo white.png">
 </head>
-<body class="admin-layout">
 
+<body class="admin-layout">
 <?php include "../../partials/navbar.php"; ?> 
 
 <main class="admin-content">
@@ -45,5 +45,6 @@ if ($playing_day_id <= 0) {
 
 </div>
 </main>
+<?php include "../partials/admin_footer.php"; ?>
 </body>
 </html>

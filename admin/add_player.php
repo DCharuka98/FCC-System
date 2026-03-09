@@ -61,11 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-    <body class="admin-layout">
+<head>    
     <title>Add Player | FCC</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
     <link rel="icon" href="../assets/images/Logo white.png">
+    <body class="admin-layout">
 </head>
 <body>
 

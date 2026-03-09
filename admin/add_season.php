@@ -60,6 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </div>
-
+<?php include "partials/admin_footer.php"; ?>
 </body>
 </html>

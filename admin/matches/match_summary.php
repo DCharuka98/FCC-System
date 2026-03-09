@@ -381,5 +381,6 @@ for($i = $count; $i < 4; $i++):
 </div>
 
 </div>
+<?php include "../partials/admin_footer.php"; ?>
 </main>
 </body>

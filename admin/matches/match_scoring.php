@@ -1331,5 +1331,6 @@ updateUI();
         <?php endif; ?>
     </div>
 </div>
+<?php include "../partials/admin_footer.php"; ?>
 </body>
 </html>

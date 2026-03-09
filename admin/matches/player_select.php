@@ -23,7 +23,7 @@ while ($row = $result->fetch_assoc()) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Divide Teams | FCC</title>
+    <title>Select Players | FCC</title>
     <link rel="stylesheet" href="../../assets/css/admin.css">
     <link rel="icon" href="../../assets/images/Logo white.png">
 </head>
@@ -36,7 +36,7 @@ while ($row = $result->fetch_assoc()) {
 <div class="page-container">
 
 <div class="form-card">
-    <h2>Divide Teams</h2>
+    <h2>Select Players</h2>
 
     <input
         type="text"
@@ -138,6 +138,6 @@ function renderSelected() {
     });
 }
 </script>
-
+<?php include "../partials/admin_footer.php"; ?>
 </body>
 </html>
