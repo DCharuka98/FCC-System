@@ -805,5 +805,139 @@ form button:hover {
     background:rgba(255,255,255,0.05);
     }
 }
+/* ============================= */
+/* FCC SYSTEM MOBILE RESPONSIVE  */
+/* ============================= */
+
+@media (max-width: 1024px){
+
+.cards{
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.cards .card{
+width:280px;
+}
+
+.scorecards-grid{
+grid-template-columns:1fr;
+}
+
+.rank-grid{
+grid-template-columns:1fr 1fr;
+}
+
+.career-stats{
+grid-template-columns:1fr 1fr;
+}
+
+.player-info-grid{
+grid-template-columns:1fr 1fr;
+}
+
+}
+
+
+@media (max-width: 768px){
+
+body{
+font-size:14px;
+}
+
+.admin-navbar{
+flex-direction:column;
+align-items:center;
+gap:10px;
+padding:10px;
+}
+
+.admin-navbar .nav-links{
+flex-wrap:wrap;
+justify-content:center;
+gap:8px;
+}
+
+.dashboard-header{
+flex-direction:column;
+align-items:center;
+gap:10px;
+text-align:center;
+}
+
+.cards{
+flex-direction:column;
+align-items:center;
+}
+
+.cards .card{
+width:100%;
+max-width:320px;
+}
+
+.scorecards-grid{
+grid-template-columns:1fr;
+}
+
+.rank-grid{
+grid-template-columns:1fr;
+}
+
+.career-stats{
+grid-template-columns:1fr;
+}
+
+.player-info-grid{
+grid-template-columns:1fr;
+}
+
+.timeline{
+justify-content:center;
+}
+
+.result-banner{
+font-size:16px;
+padding:8px 18px;
+}
+
+table{
+font-size:12px;
+}
+
+.page-container{
+padding:10px;
+}
+
+}
+
+
+@media (max-width: 480px){
+
+h1{
+font-size:22px;
+}
+
+h2{
+font-size:18px;
+}
+
+h3{
+font-size:16px;
+}
+
+.subtitle{
+font-size:13px;
+}
+
+.admin-navbar img{
+width:28px;
+}
+
+.logout-btn{
+padding:6px 12px;
+font-size:12px;
+}
+
+}
 
 
