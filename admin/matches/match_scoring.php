@@ -1077,19 +1077,27 @@ function renderLiveBattingCard() {
     const strikerPlayer = batPlayers.find(p => p.player_id == striker.value);
     const nonStrikerPlayer = batPlayers.find(p => p.player_id == nonStriker.value);
 
-    [strikerPlayer, nonStrikerPlayer].forEach(p => {
-
-        if (!p) return;
-
-        const s = batsmanStats[p.player_id] || { runs: 0, balls: 0 };
+    if (strikerPlayer) {
+        const s = batsmanStats[strikerPlayer.player_id] || { runs: 0, balls: 0 };
 
         html += `
             <div class="stat-row">
-                <span>${p.full_name} <b style="color:#22c55e">*</b></span>
+                <span>${strikerPlayer.full_name} <b style="color:#22c55e">*</b></span>
                 <span>${s.runs} (${s.balls})</span>
             </div>
         `;
-    });
+    }
+
+    if (nonStrikerPlayer) {
+        const s = batsmanStats[nonStrikerPlayer.player_id] || { runs: 0, balls: 0 };
+
+        html += `
+            <div class="stat-row">
+                <span>${nonStrikerPlayer.full_name}</span>
+                <span>${s.runs} (${s.balls})</span>
+            </div>
+        `;
+    }
 
     document.getElementById("liveBattingCard").innerHTML = html;
 }

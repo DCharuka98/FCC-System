@@ -83,7 +83,7 @@ searchInput.addEventListener("input", () => {
 
     const matches = allPlayers.filter(p =>
         p.full_name.toLowerCase().includes(q) &&
-        !selectedPlayers.has(p.player_id)
+        !selectedPlayers.has(Number(p.player_id))
     );
 
     matches.forEach(p => {
@@ -102,6 +102,7 @@ searchInput.addEventListener("input", () => {
 });
 
 function addPlayer(id, name) {
+    id = Number(id);
     selectedPlayers.set(id, name);
     renderSelected();
     searchResults.innerHTML = "";
@@ -109,10 +110,10 @@ function addPlayer(id, name) {
 }
 
 function removePlayer(id) {
+    id = Number(id);
     selectedPlayers.delete(id);
     renderSelected();
 }
-
 function renderSelected() {
     selectedBox.innerHTML = "";
     selectedInputs.innerHTML = "";
@@ -138,6 +139,5 @@ function renderSelected() {
     });
 }
 </script>
-<?php include "../partials/admin_footer.php"; ?>
 </body>
 </html>

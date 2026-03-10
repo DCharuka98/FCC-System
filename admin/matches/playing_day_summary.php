@@ -72,7 +72,7 @@ while($r=$res->fetch_assoc()) $matches[]=$r;
 <title>Playing Day Summary</title>
 <link rel="stylesheet" href="../../assets/css/admin.css">
 <link rel="icon" href="../assets/images/Logo white.png">
-
+<body class="admin-layout">
 <style>
 *{
 margin:0;
@@ -331,6 +331,5 @@ endforeach;
 </main>
 
 <?php include "../partials/admin_footer.php"; ?>
-
 </body>
 </html>

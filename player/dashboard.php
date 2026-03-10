@@ -399,6 +399,6 @@ transform:translateY(-2px);
 </div>
 
 </main>
-
+<?php include "../admin/partials/admin_footer.php"; ?>
 </body>
 </html>
