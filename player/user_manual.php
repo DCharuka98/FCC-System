@@ -127,5 +127,6 @@ require_once "../config/db.php";
     </div>
 </div>
 </main>
+<?php include "../admin/partials/admin_footer.php"; ?>
 </body>
 </html>

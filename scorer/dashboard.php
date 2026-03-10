@@ -8,14 +8,19 @@ require_once "scorer_guard.php";
     <link rel="icon" href="../assets/images/Logo white.png">
     <link rel="stylesheet" href="../assets/css/admin.css">
     <style>
-    .cards{
-        display:grid;
-        grid-template-columns:repeat(4, 1fr);
-        gap:25px;
-        width: 1300px;
+        .cards{
+        display:flex;
+        flex-wrap:wrap;
+        gap:30px;
+        justify-content:center;
         margin-top:40px;
-        margin-left: -170px;
-    }
+        max-width:900px;
+        margin-inline:auto;
+        }
+
+        .cards .card{
+        width:280px;
+        }
     </style>
 </head>
 
@@ -37,31 +42,33 @@ require_once "scorer_guard.php";
 
 <div class="cards">
 
-<a href="../admin/add_player.php" class="card">
-    <h3>➕ Add Player</h3>
-    <p>Create new player profiles</p>
-</a>
+    <a href="../admin/add_player.php" class="card">
+        <h3>➕ Add Player</h3>
+        <p>Create new player profiles</p>
+    </a>
 
-<a href="../admin/matches/start_day.php" class="card">
-    <h3>🗓 Start Playing Day</h3>
-    <p>Create and manage match day</p>
-</a>
+    <a href="../admin/matches/start_day.php" class="card">
+        <h3>🗓 Start Playing Day</h3>
+        <p>Create and manage match day</p>
+    </a>
 
-<a href="../admin/rankings.php" class="card">
-    <h3>🏆 View Rankings</h3>
-    <p>See batting, bowling and fielding stats</p>
-</a>
+    <a href="../admin/rankings.php" class="card">
+        <h3>🏆 View Rankings</h3>
+        <p>See batting, bowling and fielding stats</p>
+    </a>
 
-<a href="user_manual.php" class="card">
-    <h3>📘 User Manual</h3>
-    <p>View scorer system guide and usage instructions</p>
-</a>
+    <a href="../admin/previous_matches_month.php" class="card">
+        <h3>📊 Previous Matches</h3>
+        <p>View past match scorecards</p>
+    </a>
+
+    <a href="user_manual.php" class="card">
+        <h3>📘 User Manual</h3>
+        <p>View scorer system guide and usage instructions</p>
+    </a>
 </div>
-
 </div>
-
 </main>
-
 <?php include "../admin/partials/admin_footer.php"; ?>
 </body>
 </html>

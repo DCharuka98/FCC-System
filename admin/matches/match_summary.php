@@ -85,143 +85,143 @@ if($second['total_runs'] > $first['total_runs']){
 <link rel="icon" href="../assets/images/Logo white.png">
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+    *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    }
 
-html, body{
-height:100%;
-overflow:hidden;
-font-family:'Segoe UI',sans-serif;
-background:linear-gradient(135deg,#0f172a,#1e293b);
-text-transform:uppercase;
-color:white;
-}
+    html, body{
+    height:100%;
+    overflow:hidden;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    text-transform:uppercase;
+    color:white;
+    }
 
-.page-container{
-height:100vh;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;   
-gap:20px;                
-padding:20px 30px;
-}
+    .page-container{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;   
+    gap:20px;                
+    padding:20px 30px;
+    }
 
-.main-title{
-font-size:24px;
-font-weight:900;
-letter-spacing:2px;
-text-align:center;
-}
+    .main-title{
+    font-size:24px;
+    font-weight:900;
+    letter-spacing:2px;
+    text-align:center;
+    }
 
-.summary{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:25px;
-width:100%;
-max-width:1100px;
-}
+    .summary{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+    width:100%;
+    max-width:1100px;
+    }
 
-.card{
-background:#111827;
-padding:15px;
-border-radius:14px;
-box-shadow:0 15px 30px rgba(0,0,0,.5);
-}
+    .card{
+    background:#111827;
+    padding:15px;
+    border-radius:14px;
+    box-shadow:0 15px 30px rgba(0,0,0,.5);
+    }
 
-.card h2{
-text-align:center;
-font-size:14px;
-margin-bottom:10px;
-color:#38bdf8;
-}
+    .card h2{
+    text-align:center;
+    font-size:14px;
+    margin-bottom:10px;
+    color:#38bdf8;
+    }
 
-table{
-width:100%;
-border-collapse:collapse;
-margin-bottom:14px;
-}
+    table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:14px;
+    }
 
-th{
-font-size:11px;
-padding:8px 6px;   /* more vertical spacing */
-color:#94a3b8;
-border-bottom:1px solid rgba(255,255,255,.2);
-text-align:left;
-}
+    th{
+    font-size:11px;
+    padding:8px 6px;  
+    color:#94a3b8;
+    border-bottom:1px solid rgba(255,255,255,.2);
+    text-align:left;
+    }
 
-td{
-font-size:11px;
-font-weight:700;
-padding:8px 6px;
-border-bottom:1px solid rgba(255,255,255,.08);
-}
+    td{
+    font-size:11px;
+    font-weight:700;
+    padding:8px 6px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    }
 
-tr:hover{
-background:rgba(255,255,255,.05);
-}
-.empty-row td{
-color: rgba(255,255,255,0.25);
-}
+    tr:hover{
+    background:rgba(255,255,255,.05);
+    }
+    .empty-row td{
+    color: rgba(255,255,255,0.25);
+    }
 
-.overs{
-background:#1f2937;
-padding:8px;
-border-radius:8px;
-text-align:center;
-font-size:11px;
-font-weight:600;
-margin:12px 0;
-}
+    .overs{
+    background:#1f2937;
+    padding:8px;
+    border-radius:8px;
+    text-align:center;
+    font-size:11px;
+    font-weight:600;
+    margin:12px 0;
+    }
 
-.result-bar{
-padding:12px 30px;
-font-size:14px;
-font-weight:900;
-width: 500px;
-border-radius:25px;
-background:linear-gradient(90deg,#2563eb,#7c3aed);
-color:white;
-text-align:center;
-}
+    .result-bar{
+    padding:12px 30px;
+    font-size:14px;
+    font-weight:900;
+    width: 500px;
+    border-radius:25px;
+    background:linear-gradient(90deg,#2563eb,#7c3aed);
+    color:white;
+    text-align:center;
+    }
 
-.actions{
-display:flex;
-gap:15px;
-}
+    .actions{
+    display:flex;
+    gap:15px;
+    }
 
-.action-btn{
-padding:7px 18px;
-border-radius:8px;
-font-weight:700;
-font-size:11px;
-text-decoration:none;
-color:white;
-transition:.3s;
-}
+    .action-btn{
+    padding:7px 18px;
+    border-radius:8px;
+    font-weight:700;
+    font-size:11px;
+    text-decoration:none;
+    color:white;
+    transition:.3s;
+    }
 
-.end-btn{
-background:#ef4444;
-}
+    .end-btn{
+    background:#ef4444;
+    }
 
-.next-btn{
-background:#2563eb;
-}
+    .next-btn{
+    background:#2563eb;
+    }
 
-.action-btn:hover{
-opacity:.85;
-transform:translateY(-2px);
-}
-.day-btn{
-background:#f59e0b; 
-}
+    .action-btn:hover{
+    opacity:.85;
+    transform:translateY(-2px);
+    }
+    .day-btn{
+    background:#f59e0b; 
+    }
 
-.day-btn:hover{
-background:#d97706;
-}
+    .day-btn:hover{
+    background:#d97706;
+    }
 </style>
 </head>
 

@@ -11,6 +11,21 @@ require_once "admin_guard.php";
     <link rel="icon" href="../assets/images/Logo white.png">
     <link rel="stylesheet" href="../assets/css/admin.css">
     
+    <style>
+    .cards{
+    display:flex;
+    flex-wrap:wrap;
+    gap:30px;
+    justify-content:center;
+    margin-top:40px;
+    max-width:900px;
+    margin-inline:auto;
+    }
+
+    .cards .card{
+    width:280px;
+    }
+    </style>
 </head>
 <body class="admin-layout">
     <main class="admin-content">
@@ -55,10 +70,16 @@ require_once "admin_guard.php";
                 <h3>🏆 View Rankings</h3>
                 <p>See batting, bowling and fielding rankings</p>
             </a>
+
+             <a href="previous_matches_month.php" class="card">
+                <h3>📊 Previous Matches</h3>
+                <p>View previous match scorecards</p>
+            </a>
+            
             <a href="user_manual.php" class="card">
                 <h3>📘 User Manual</h3>
                 <p>View admin system guide and usage instructions</p>
-            </a>
+            </a>           
         </div>
     </div>
     </main>

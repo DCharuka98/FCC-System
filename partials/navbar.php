@@ -5,6 +5,7 @@ $role = $_SESSION['role'] ?? '';
 ?>
 
 <div class="admin-navbar">
+
     <div class="nav-left">
         <img src="/fcc-system/assets/images/Logo white.png" alt="FCC Logo">
         <span>FCC System</span>
@@ -33,6 +34,16 @@ $role = $_SESSION['role'] ?? '';
 
             <a href="/fcc-system/admin/seasons.php"
                class="<?= $currentPage == 'seasons.php' ? 'active' : '' ?>">Seasons</a>
+
+        <?php endif; ?>
+
+
+        <?php if (in_array($role, ['admin','scorer','player'])): ?>
+
+            <a href="/fcc-system/admin/previous_matches_month.php"
+               class="<?= strpos($currentPage,'previous_') !== false || $currentPage=='scorecard.php' ? 'active' : '' ?>">
+               Previous Matches
+            </a>
 
         <?php endif; ?>
 
@@ -73,4 +84,5 @@ $role = $_SESSION['role'] ?? '';
     </div>
 
     <a href="/fcc-system/auth/logout.php" class="logout-btn">Logout</a>
+
 </div>
